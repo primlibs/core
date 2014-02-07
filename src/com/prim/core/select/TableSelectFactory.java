@@ -7,6 +7,8 @@ package com.prim.core.select;
 import com.prim.core.AbstractApplication;
 import com.prim.core.model.DinamicModel;
 import com.prim.core.modelStructure.Structure;
+import com.prim.core.warehouse.Keeper;
+import com.prim.core.warehouse.modelKeeper.ModelStructureKeeper;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +41,9 @@ public class TableSelectFactory {
    * @throws Exception
    */
   public Table getTable(String modelAlias) throws Exception {
-    Structure structure = app.getKeeper().getModelStructureKeeper().getStructure(modelAlias);
+    Keeper keeper = app.getKeeper();
+    ModelStructureKeeper msk = keeper.getModelStructureKeeper();
+    Structure structure = msk.getStructure(modelAlias);
     //Structure structure = ModelStructureKeeper.getInstance(app).getStructure(modelAlias);
     if (structure == null) {
       throw new Exception("Tables structure is null " + modelAlias);

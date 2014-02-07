@@ -23,32 +23,30 @@ import org.apache.tools.zip.*;
  */
 public class ZipArchive {
 
- 
   /**
    * файлы, которые нужно включить в архив
    */
   private List<FileToZip> files = new ArrayList();
-  
   /**
    * ошибки
    */
   private List<String> errors = new ArrayList();
-
   /**
    * массив имен файлов
    */
-  private Map<String, Integer> names = new HashMap();  
-  
+  private Map<String, Integer> names = new HashMap();
+
   /**
-   * 
+   *
    * @return ошибки
    */
   public List<String> getErrors() {
     return errors;
-  } 
-  
+  }
+
   /**
    * добавить файл к архиву
+   *
    * @param filePath путь к файлу
    * @param newName название файла в архиве
    */
@@ -58,17 +56,20 @@ public class ZipArchive {
     }
   }
 
-  
   /**
    * создать архив
-   * @throws Exception 
-   */  
-   public byte[] doZip() throws Exception {
+   *
+   * @throws Exception
+   */
+  public byte[] doZip() throws Exception {
     //ZipOutputStream out = new ZipOutputStream(new FileOutputStream(archivePath));
-    ByteArrayOutputStream ba = new ByteArrayOutputStream();
-    ZipOutputStream out = new ZipOutputStream(ba);
-    out.setEncoding("CP866");
+    ByteArrayOutputStream ba = null;
+    ZipOutputStream out = null;
     try {
+      ba = new ByteArrayOutputStream();
+      out = new ZipOutputStream(ba);
+      out.setEncoding("CP866");
+
       out.setLevel(9);
 
       for (FileToZip file : files) {
@@ -78,10 +79,15 @@ public class ZipArchive {
           errors.add("Файл " + file.getPath() + " не существует");
         }
       }
-      out.close();
     } catch (Exception e) {
-      out.close();
       errors.add(MyString.getStackExeption(e));
+    } finally {
+      if (out != null) {
+        out.close();
+      }
+      if (ba != null) {
+        ba.close();
+      }
     }
     return ba.toByteArray();
   }
@@ -93,31 +99,34 @@ public class ZipArchive {
     // если такое имя файла раньше не встречалось, то заносим его в массив имен
     if (!names.containsKey(name)) {
       names.put(name, 1);
-    // если такое имя файла уже встречалось, то добавляем к имени номер
+      // если такое имя файла уже встречалось, то добавляем к имени номер
     } else {
       names.put(name, names.get(name) + 1);
       name += "_" + names.get(name);
     }
-    FileInputStream in = new FileInputStream(filePath);
+    FileInputStream in = null;
     try {
+      in = new FileInputStream(filePath);
       ZipEntry entry = new ZipEntry(name);
       out.putNextEntry(entry);
       int len;
       while ((len = in.read(buf)) > 0) {
         out.write(buf, 0, len);
       }
-      out.closeEntry();
-      in.close();
     } catch (Exception e) {
-      out.closeEntry();
-      in.close();
       errors.add(MyString.getStackExeption(e));
+    } finally {
+      out.closeEntry();
+      if (in != null) {
+        in.close();
+      }
     }
   }
-  
 }
+
 /**
  * файл, который нужно добавить к архиву
+ *
  * @author Pavel Rice
  */
 class FileToZip {
@@ -126,14 +135,13 @@ class FileToZip {
    * путь
    */
   private String path;
-  
   /**
    * название
    */
   private String name;
 
   /**
-   * 
+   *
    * @param path путь к файлу
    * @param name название файла в архиве
    */
@@ -143,7 +151,7 @@ class FileToZip {
   }
 
   /**
-   * 
+   *
    * @return путь до файла
    */
   String getPath() {
@@ -151,7 +159,7 @@ class FileToZip {
   }
 
   /**
-   * 
+   *
    * @return имя файла в архиве
    */
   String getName() {
@@ -159,7 +167,7 @@ class FileToZip {
   }
 
   /**
-   * 
+   *
    * @return существует ли файл
    */
   boolean exists() {

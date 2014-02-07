@@ -12,10 +12,7 @@ import com.prim.support.primXml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,7 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 
 /**
  *
@@ -208,8 +204,9 @@ public class PairKeeper {
   }
 
   private void setPairsFromXml(String path) throws Exception {
+    FileInputStream fis = null;
     try {
-      FileInputStream fis = new FileInputStream(path);
+      fis = new FileInputStream(path);
 
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -222,6 +219,10 @@ public class PairKeeper {
     } catch (Exception e) {
       errors.add(MyString.getStackExeption(e));
       reset();
+    } finally {
+      if (fis != null) {
+        fis.close();
+      }
     }
   }
 

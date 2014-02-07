@@ -14,26 +14,21 @@ import com.prim.support.MyString;
  *
  * @author obydennaya_office
  */
-final class MysqlExecutor implements QueryExecutor{
+final class MysqlExecutor implements QueryExecutor {
 
   private Connection connection;
-  
-  public static Double maxQueryTime=0.00;
-  public static String maxQueryText="";
-  
-    
-   /**
+  public static Double maxQueryTime = 0.00;
+  public static String maxQueryText = "";
+  /**
    * текст запроса по результату
    *
    * @var String
    */
   protected String queryText = "";
-  
   /**
    * время выполнения запроса
    */
   protected Double queryTime = 0.00;
-  
   /**
    * массив ошибок
    *
@@ -44,11 +39,12 @@ final class MysqlExecutor implements QueryExecutor{
    * результат выполнения запроса
    */
   protected ResultSet queryResult;
+  
+  protected Statement st;
   /**
    * результат выплнения запроса
    */
-  protected List<HashMap<String, Object>> resultList;
-
+  protected List<Map<String, Object>> resultList;
 
   /**
    * Возвращает ошибки
@@ -70,8 +66,6 @@ final class MysqlExecutor implements QueryExecutor{
   public Double getQueryTime() {
     return queryTime;
   }
-  
-  
 
   /**
    * возвращает результат запроса в виде ArrayList
@@ -81,42 +75,16 @@ final class MysqlExecutor implements QueryExecutor{
    */
   @Override
   public List<Map<String, Object>> getResultList() throws Exception {
-    ArrayList<Map<String, Object>> rs = new ArrayList<Map<String, Object>>();
-    try {
-      if (queryResult != null) {
-        ResultSetMetaData metaData = queryResult.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        queryResult.beforeFirst();
-        while (queryResult.next()) {
-          HashMap<String, Object> map = new HashMap<String, Object>();
-          for (int i = 1; i <= columnCount; i++) {
-            String columnName = metaData.getColumnLabel(i);
-            Object value = queryResult.getObject(i);
-            int type = metaData.getColumnType(i);
-            try {
-              if ((type == Types.TIMESTAMP) & !(value == null)) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                value = (Object) format.format(value);
-              }
-            } catch (Exception e) {
-              System.out.println("error " + value + " " + type);
-              System.out.println(e);
-            }
-            map.put(columnName, value);
-          }
-          rs.add(map);
-        }
-      }
-      return rs;
-    } catch (SQLException e) {
-      throw new Exception("ошибка в объекте QueryExecutor при получении результатов запроса " + e.getMessage());
+    if (resultList == null) {
+      saveResult();
     }
+    return resultList;
   }
 
-  static MysqlExecutor getInstance(Connection con, String queryText){
+  static MysqlExecutor getInstance(Connection con, String queryText) {
     return new MysqlExecutor(con, queryText);
   }
-  
+
   /**
    *
    * @param con объект Connection
@@ -155,24 +123,23 @@ final class MysqlExecutor implements QueryExecutor{
     Boolean result = false;
     if (validateQuery() != false) {
       try {
-        Statement st = connection.createStatement();
+        st = connection.createStatement();
         long time1 = Calendar.getInstance().getTime().getTime();
         queryResult = st.executeQuery(queryText);
         long time2 = Calendar.getInstance().getTime().getTime();
         Double diff = (time2 - time1) / 1000.00;
         queryTime = diff;
-        if(maxQueryTime<diff){
-          maxQueryTime= Double.valueOf(diff);
-          maxQueryText= queryText;
+        if (maxQueryTime < diff) {
+          maxQueryTime = Double.valueOf(diff);
+          maxQueryText = queryText;
         }
         result = true;
       } catch (Exception e) {
-        error.add(MyString.getStackExeption(e)+queryText);
+        error.add(MyString.getStackExeption(e) + queryText);
       }
     }
     return result;
   }
-
 
   /**
    * Валидирует текст запроса на спец символы
@@ -205,7 +172,47 @@ final class MysqlExecutor implements QueryExecutor{
 
   @Override
   public void resetMaxQueryInfo() {
-    maxQueryText="";
-    maxQueryTime=0.00;
+    maxQueryText = "";
+    maxQueryTime = 0.00;
+  }
+
+  private void saveResult() throws Exception {
+    List<Map<String, Object>> rs = new ArrayList<Map<String, Object>>();
+    try {
+      if (queryResult != null) {
+        ResultSetMetaData metaData = queryResult.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        queryResult.beforeFirst();
+        while (queryResult.next()) {
+          HashMap<String, Object> map = new HashMap<String, Object>();
+          for (int i = 1; i <= columnCount; i++) {
+            String columnName = metaData.getColumnLabel(i);
+            Object value = queryResult.getObject(i);
+            int type = metaData.getColumnType(i);
+            try {
+              if ((type == Types.TIMESTAMP) & !(value == null)) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                value = (Object) format.format(value);
+              }
+            } catch (Exception e) {
+              System.out.println("error " + value + " " + type);
+              System.out.println(e);
+            }
+            map.put(columnName, value);
+          }
+          rs.add(map);
+        }
+      }
+      resultList = rs;
+    } catch (SQLException e) {
+      throw new Exception("ошибка в объекте QueryExecutor при получении результатов запроса " + e.getMessage());
+    } finally {
+      if (queryResult != null) {
+        queryResult.close();
+      }
+      if (st != null) {
+        st.close();
+      }
+    }
   }
 }

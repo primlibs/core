@@ -10,17 +10,9 @@ import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.sql.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -35,7 +27,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 //import prim.warehouse.OptionsSingleton;
-
 /**
  * класс,хранящий в себе структуру моделей
  *
@@ -53,20 +44,27 @@ public class ModelStructureKeeper {
 
   private ModelStructureKeeper(AbstractApplication application) throws Exception {
     app = application;
-    if (app.getProperty("factoryFilePath") == null) {
-      Statement st = application.getConnection().createStatement();
-      st.executeQuery("set names " + app.getDbEncoding() + ";");
-      Map<String, Structure> structMap = new LinkedHashMap();
-      structMap.putAll(setUserStructure());
-      structMap.putAll(setStructureFromXml(app.getAppUserDataConfigPath() + "/systemModel.xml"));
-      structureMap = structMap;
-    } else {
-      Statement st = application.getConnection().createStatement();
-      st.executeQuery("set names " + app.getDbEncoding() + ";");
-      Map<String, Structure> structMap = new LinkedHashMap();
-      structMap.putAll(setStructureFromXml(app.getProperty("factoryFilePath")));
-      structMap.putAll(setStructureFromXml(app.getAppUserDataConfigPath() + "/systemModel.xml"));
-      structureMap = structMap;
+    Statement st = null;
+    try {
+      if (app.getProperty("factoryFilePath") == null) {
+        st = application.getConnection().createStatement();
+        st.executeQuery("set names " + app.getDbEncoding() + ";");
+        Map<String, Structure> structMap = new LinkedHashMap();
+        structMap.putAll(setUserStructure());
+        structMap.putAll(setStructureFromXml(app.getAppUserDataConfigPath() + "/systemModel.xml"));
+        structureMap = structMap;
+      } else {
+        st = application.getConnection().createStatement();
+        st.executeQuery("set names " + app.getDbEncoding() + ";");
+        Map<String, Structure> structMap = new LinkedHashMap();
+        structMap.putAll(setStructureFromXml(app.getProperty("factoryFilePath")));
+        structMap.putAll(setStructureFromXml(app.getAppUserDataConfigPath() + "/systemModel.xml"));
+        structureMap = structMap;
+      }
+    } finally {
+      if (st != null) {
+        st.close();
+      }
     }
   }
 
@@ -156,43 +154,54 @@ public class ModelStructureKeeper {
   public ModelStructureKeeper addStructure(String name, Structure struct) throws Exception {
     boolean status = false;
     errors.clear();
-    if (!structureMap.containsKey(name)) {
-      if (!struct.isSystem()) {
-        PreparedStatement st2 = app.getConnection().prepareStatement("insert into user_data_types (name, active_from, struct_text) values (?, now(), ?)");
-        st2.setString(1, name);
+    PreparedStatement st2 = null;
+    CharArrayWriter ch = null;
+    try {
+      if (!structureMap.containsKey(name)) {
+        if (!struct.isSystem()) {
+          st2 = app.getConnection().prepareStatement("insert into user_data_types (name, active_from, struct_text) values (?, now(), ?)");
+          st2.setString(1, name);
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.newDocument();
-        Element root = doc.createElement("root");
-        doc.appendChild(root);
-        struct.getSelfInXml(doc, root);
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          DocumentBuilder db = dbf.newDocumentBuilder();
+          Document doc = db.newDocument();
+          Element root = doc.createElement("root");
+          doc.appendChild(root);
+          struct.getSelfInXml(doc, root);
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
+          TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          Transformer transformer = transformerFactory.newTransformer();
 
-        DOMSource source = new DOMSource(doc);
-        CharArrayWriter ch = new CharArrayWriter();
-        StreamResult result = new StreamResult(ch);
-        transformer.transform(source, result);
-        st2.setString(2,ch.toString());
-        int n = st2.executeUpdate();
-        if (n != 0) {
-          status = true;
+          DOMSource source = new DOMSource(doc);
+          ch = new CharArrayWriter();
+          StreamResult result = new StreamResult(ch);
+          transformer.transform(source, result);
+          st2.setString(2, ch.toString());
+          int n = st2.executeUpdate();
+          if (n != 0) {
+            status = true;
+          }
+          if (status == false) {
+            errors.add("Ошибка при попытке записать структуру в базу данных");
+          }
+        } else {
+          errors.add("Ошибка: нельзя добавить системную модель");
         }
-        if (status == false) {
-          errors.add("Ошибка при попытке записать структуру в базу данных");
-        }
-        st2.close();
       } else {
-        errors.add("Ошибка: нельзя добавить системную модель");
+        errors.add("Ошибка: структура с таким именем уже существует");
       }
-    } else {
-      errors.add("Ошибка: структура с таким именем уже существует");
+    } finally {
+      if (st2 != null) {
+        st2.close();
+      }
+      if (ch != null) {
+        ch.close();
+      }
     }
     if (status == true) {
       return new ModelStructureKeeper(app);
     }
+
     return this;
   }
 
@@ -221,39 +230,54 @@ public class ModelStructureKeeper {
   ModelStructureKeeper updateStructure(String name) throws Exception {
     boolean status = false;
     errors.clear();
-    if (structureMap.containsKey(name)) {
-      Structure struct = structureMap.get(name);
-      if (!struct.isSystem()) {
-        PreparedStatement st = app.getConnection().prepareStatement("update user_data_types set struct_text = ? where name = ?");
-        st.setString(2, name);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.newDocument();
-        Element root = doc.createElement("root");
-        doc.appendChild(root);
-        struct.getSelfInXml(doc, root);
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        CharArrayWriter ch = new CharArrayWriter();
-        StreamResult result = new StreamResult(ch);
-        transformer.transform(source, result);
-        st.setString(1,ch.toString());
-        int n = st.executeUpdate();
-        if (n != 0) {
-          status = true;
+    PreparedStatement st = null;
+    CharArrayWriter ch = null;
+    try {
+
+      if (structureMap.containsKey(name)) {
+        Structure struct = structureMap.get(name);
+        if (!struct.isSystem()) {
+          st = app.getConnection().prepareStatement("update user_data_types set struct_text = ? where name = ?");
+          st.setString(2, name);
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          DocumentBuilder db = dbf.newDocumentBuilder();
+          Document doc = db.newDocument();
+          Element root = doc.createElement("root");
+          doc.appendChild(root);
+          struct.getSelfInXml(doc, root);
+
+          TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          Transformer transformer = transformerFactory.newTransformer();
+          DOMSource source = new DOMSource(doc);
+          ch = new CharArrayWriter();
+          StreamResult result = new StreamResult(ch);
+          transformer.transform(source, result);
+          st.setString(1, ch.toString());
+          int n = st.executeUpdate();
+          if (n != 0) {
+            status = true;
+          }
+          if (status == false) {
+            errors.add("Ошибка при попытке записать структуру в базу данных");
+          }
+          st.close();
+        } else {
+          errors.add("Ошибка: нельзя изменить системную модель");
         }
-        if (status == false) {
-          errors.add("Ошибка при попытке записать структуру в базу данных");
-        }
-        st.close();
       } else {
-        errors.add("Ошибка: нельзя изменить системную модель");
+        errors.add("Ошибка: структура с таким именем не существует");
       }
-    } else {
-      errors.add("Ошибка: структура с таким именем не существует");
+
+    } finally {
+      if (st != null) {
+        st.close();
+      }
+      if (ch != null) {
+        ch.close();
+      }
     }
+
     if (status == true) {
       return new ModelStructureKeeper(app);
     }
@@ -271,41 +295,56 @@ public class ModelStructureKeeper {
   public ModelStructureKeeper updateStructure(String name, Structure struct) throws Exception {
     boolean status = false;
     errors.clear();
-    if (structureMap.containsKey(name)) {
-      if (!struct.isSystem()) {
-        PreparedStatement st = app.getConnection().prepareStatement("update user_data_types set struct_text = ? where name = ?");
-        st.setString(2, name);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.newDocument();
-        Element root = doc.createElement("root");
-        doc.appendChild(root);
-        struct.getSelfInXml(doc, root);
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        CharArrayWriter ch = new CharArrayWriter();
-        StreamResult result = new StreamResult(ch);
-        transformer.transform(source, result);
-        st.setString(1,ch.toString());
-        int n = st.executeUpdate();
-        if (n != 0) {
-          status = true;
+    PreparedStatement st = null;
+    CharArrayWriter ch = null;
+    try {
+
+      if (structureMap.containsKey(name)) {
+        if (!struct.isSystem()) {
+          st = app.getConnection().prepareStatement("update user_data_types set struct_text = ? where name = ?");
+          st.setString(2, name);
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          DocumentBuilder db = dbf.newDocumentBuilder();
+          Document doc = db.newDocument();
+          Element root = doc.createElement("root");
+          doc.appendChild(root);
+          struct.getSelfInXml(doc, root);
+
+          TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          Transformer transformer = transformerFactory.newTransformer();
+          DOMSource source = new DOMSource(doc);
+          ch = new CharArrayWriter();
+          StreamResult result = new StreamResult(ch);
+          transformer.transform(source, result);
+          st.setString(1, ch.toString());
+          int n = st.executeUpdate();
+          if (n != 0) {
+            status = true;
+          }
+          if (status == false) {
+            errors.add("Ошибка при попытке записать структуру в базу данных");
+          }
+          st.close();
+        } else {
+          errors.add("Ошибка: нельзя изменить системную модель");
         }
-        if (status == false) {
-          errors.add("Ошибка при попытке записать структуру в базу данных");
-        }
-        st.close();
       } else {
-        errors.add("Ошибка: нельзя изменить системную модель");
+        errors.add("Ошибка: структура с таким именем не существует");
       }
-    } else {
-      errors.add("Ошибка: структура с таким именем не существует");
+      if (status == true) {
+        return new ModelStructureKeeper(app);
+      }
+
+    } finally {
+      if (st != null) {
+        st.close();
+      }
+      if (ch != null) {
+        ch.close();
+      }
     }
-    if (status == true) {
-      return new ModelStructureKeeper(app);
-    }
+
     return this;
   }
 
@@ -321,33 +360,44 @@ public class ModelStructureKeeper {
             + " where active_to is null "
             + "order by t.name";
 
-    Statement st = app.getConnection().createStatement();
-    ResultSet rs = st.executeQuery(queryText);
-    while (rs.next()) {
-      // извлечь название 
-      String name = rs.getString("name");
-      // извлечь объект
-      String str = rs.getString("struct_text");
+    Statement st = null;
+    ResultSet rs = null;
+    try {
+      st = app.getConnection().createStatement();
+      rs = st.executeQuery(queryText);
+      while (rs.next()) {
+        // извлечь название 
+        String name = rs.getString("name");
+        // извлечь объект
+        String str = rs.getString("struct_text");
 
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = dbf.newDocumentBuilder();
-      InputSource is = new InputSource();
-      is.setCharacterStream(new StringReader(str));
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbf.newDocumentBuilder();
+        InputSource is = new InputSource();
+        is.setCharacterStream(new StringReader(str));
 
-      Document doc = builder.parse(is);
-      
-      NodeList list = doc.getChildNodes();
-      
-      Element structureElement = (Element) list.item(0);
-      Structure structure = StructureFabric.getStructureFromXml(structureElement);
-      int id = rs.getInt("user_data_type_id");
+        Document doc = builder.parse(is);
 
-      Map<String, Field> fields = structure.getCloneFields();
-      fields.putAll(getStandartFields(structure, id));
-      structure = StructureFabric.getStructure(structure.getTableName(), structure.getName(), structure.getTableAlias(),
-              structure.getPrimaryAlias(), structure.isSystem(), structure.isFileWork(), fields, structure.getUniqueList());
+        NodeList list = doc.getChildNodes();
 
-      structMap.put(name, structure);
+        Element structureElement = (Element) list.item(0);
+        Structure structure = StructureFabric.getStructureFromXml(structureElement);
+        int id = rs.getInt("user_data_type_id");
+
+        Map<String, Field> fields = structure.getCloneFields();
+        fields.putAll(getStandartFields(structure, id));
+        structure = StructureFabric.getStructure(structure.getTableName(), structure.getName(), structure.getTableAlias(),
+                structure.getPrimaryAlias(), structure.isSystem(), structure.isFileWork(), fields, structure.getUniqueList());
+
+        structMap.put(name, structure);
+      }
+    } finally {
+      if (st != null) {
+        st.close();
+      }
+      if (rs != null) {
+        rs.close();
+      }
     }
     return structMap;
   }
@@ -509,11 +559,11 @@ public class ModelStructureKeeper {
             getValidtorList(StringValidator, DigitsValidator, QuantityValidator),
             false);
     listField.put("delete_user_id", deleteUser);
-    
+
     ValidatorAbstract StringValidatorForChar = ValidatorAbstract.getValidator("StringLenghtValidator");
     StringValidatorForChar.setParameter("min", 1);
     StringValidatorForChar.setParameter("max", 255);
-    
+
     Field oldId = FieldFabric.getField(
             "old_id",
             "old_id",
@@ -526,7 +576,7 @@ public class ModelStructureKeeper {
             getValidtorList(StringValidatorForChar),
             false);
     listField.put("old_id", oldId);
-    
+
     return listField;
   }
 

@@ -51,14 +51,29 @@ public class CronSingleton {
   }
   
   private CronSingleton(AbstractApplication app) {
+    FileInputStream fis = null;
+    ObjectInputStream oin = null;
     try {
       this.app = app;
       configFilePath = this.app.getAppUserDataConfigPath() + "/cron.out";
-      FileInputStream fis = new FileInputStream(configFilePath);
-      ObjectInputStream oin = new ObjectInputStream(fis);
+      fis = new FileInputStream(configFilePath);
+      oin = new ObjectInputStream(fis);
       cronlist = (ArrayList<CronObject>) oin.readObject();
     } catch (Exception e) {
       cronlist = new ArrayList<CronObject>();
+    } finally {
+      try {
+      if (fis != null) {
+        fis.close();
+      } 
+      } catch (Exception e) { }
+      
+      try {
+      if (oin != null) {
+        oin.close();
+      } 
+      } catch (Exception e) { }
+      
     }
   }
 
@@ -95,17 +110,25 @@ public class CronSingleton {
    */
   public Boolean SaveCollectionInFile() throws FileNotFoundException, IOException {
     Boolean res = false;
+    FileOutputStream fos = null;
+    ObjectOutputStream oos = null;
     try {
-      FileOutputStream fos = new FileOutputStream(configFilePath);
-      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      fos = new FileOutputStream(configFilePath);
+      oos = new ObjectOutputStream(fos);
       oos.writeObject(cronlist);
-      oos.flush();
-      oos.close();
       res = true;
     } catch (FileNotFoundException e) {
       res = false;
     } catch (IOException e) {
       res = false;
+    } finally {
+      if (fos != null) {
+        fos.close();
+      }
+      if (oos != null) {
+        oos.flush();
+        oos.close();
+      }
     }
     return res;
   }

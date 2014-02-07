@@ -90,15 +90,43 @@ final public class UniqueObject implements Serializable, Cloneable, Unique {
   @Override
   public UniqueObject clone() throws CloneNotSupportedException {
     ObjectOutputStream oos = null;
+    ByteArrayOutputStream baos = null;
+    ByteArrayInputStream bais = null;
+    ObjectInputStream ois = null;
     try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      baos = new ByteArrayOutputStream();
       oos = new ObjectOutputStream(baos);
       oos.writeObject(this);
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      ObjectInputStream ois = new ObjectInputStream(bais);
+      bais = new ByteArrayInputStream(baos.toByteArray());
+      ois = new ObjectInputStream(bais);
       return (UniqueObject) ois.readObject();
     } catch (Exception ex) {
       throw new CloneNotSupportedException(MyString.getStackExeption(ex));
+    } finally {
+      try {
+      if (oos != null) {
+        oos.close();
+      }
+      } catch (Exception e) {}
+      
+       try {
+      if (baos != null) {
+        baos.close();
+      }
+      } catch (Exception e) {}
+       
+       try {
+      if (bais != null) {
+        bais.close();
+      }
+      } catch (Exception e) {}
+       
+       try {
+      if (ois != null) {
+        ois.close();
+      }
+      } catch (Exception e) {}
+       
     }
   }
 

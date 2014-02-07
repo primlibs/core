@@ -110,8 +110,9 @@ public class OptionsKeeper implements ToXml {
   private ArrayList<String> error = new ArrayList<String>();
 
   public static OptionsKeeper getInstance(String path) throws Exception {
+    FileInputStream fis = null;
     try {
-      FileInputStream fis = new FileInputStream(path);
+      fis = new FileInputStream(path);
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setValidating(true);
       DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -145,6 +146,10 @@ public class OptionsKeeper implements ToXml {
     } catch (Exception e) {
       return new OptionsKeeper(null, null, null, null, null, null, null, null, null, null,
              null, null, null, null, null, null,path, null, null);
+    } finally {
+      if (fis != null) {
+        fis.close();
+      }
     }
   }
 

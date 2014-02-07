@@ -9,7 +9,6 @@ import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Map;
 
