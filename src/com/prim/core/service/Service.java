@@ -115,7 +115,31 @@ public interface Service {
    * @return
    */
   public Object getReq(String name);
+  
+  /**
+   * получить из request массив параметров с одинаковым именем
+   * @param paramName имя параметров
+   * @return 
+   */
+  public String[] getReqArray(String paramName);
 
+  /**
+   * устанавливает статус == false и записывает в ошибки полный стек исключения
+   *
+   * @param exc
+   */ 
+  public void registerException(Exception exc);
+  
+  /**
+   * установить значения стандартных полей (insert_date и т.п.) для несистемной
+   * модели. Если isNewModel == true - то это новая запись (insert). Если
+   * isNewModel == false - то это обновление старой записи (update)
+   *
+   * @param model модель
+   * @param isNewModel новая ли это запись
+   */
+  public void setStandartFields(Model model, boolean isNewModel);
+  
   /**
    * найти активные (не удаленные) записи в БД
    */

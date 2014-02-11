@@ -838,4 +838,37 @@ final class PrimService implements Service {
   public void addMessage(List<String> msg) {
     actionResult.addMessage(msg);
   }
+  
+  @Override
+  public String[] getReqArray(String paramName) {
+    if (getReq(paramName) != null) {
+      try {
+        String[] array = (String[]) getReq(paramName);
+        return array;
+      } catch (Exception e) {
+        String param = getReq(paramName).toString();
+        String[] array = {param};
+        return array;
+      }
+    }
+    String[] array = new String[0];
+    return array;
+  }
+  
+  @Override
+  public void registerException(Exception exc) {
+    setStatus(false);
+    addError(MyString.getStackExeption(exc));
+  }
+  
+  @Override
+  public void setStandartFields(Model model, boolean isNewModel) {
+    model.set("update_date", FormatDate.getCurrentDateInMysql());
+    model.set("update_user_id", getAuthorizedUserId());
+    if (isNewModel) {
+      model.set("insert_date", FormatDate.getCurrentDateInMysql());
+      model.set("insert_user_id", getAuthorizedUserId());
+    }
+  }
+  
 }

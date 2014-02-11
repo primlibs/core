@@ -23,6 +23,23 @@ public class TableSelectFactory {
 
   AbstractApplication app;
 
+  public static Table getTable(AbstractApplication app, String modelAlias) throws Exception {
+    TableSelectFactory tf = new TableSelectFactory(app);
+    Table table = tf.getTable(modelAlias);
+    return table;
+  }
+  
+  public static Table getTable(AbstractApplication app, String modelAlias, String tableAlias) throws Exception {
+    TableSelectFactory tf = new TableSelectFactory(app);
+    Table table = tf.getTable(modelAlias, tableAlias);
+    return table;
+  }
+  
+  public static Select getSelect(AbstractApplication app, Table... tb) throws Exception {
+    TableSelectFactory tf = new TableSelectFactory(app);
+    return tf.getSelect(tb);
+  }
+  
   /**
    *
    * @param app объект приложения
