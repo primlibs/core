@@ -40,8 +40,16 @@ public class ModelStructureKeeper {
    */
   final private Map<String, Structure> structureMap;
   private ArrayList<String> errors = new ArrayList<String>();
-  final private AbstractApplication app;
+  private AbstractApplication app;
 
+  public void setApp(AbstractApplication app) {
+    this.app = app;
+  }
+  
+  public AbstractApplication getApplication() {
+    return app;
+  }
+  
   private ModelStructureKeeper(AbstractApplication application) throws Exception {
     app = application;
     Statement st = null;
@@ -152,6 +160,7 @@ public class ModelStructureKeeper {
    * @throws Exception
    */
   public ModelStructureKeeper addStructure(String name, Structure struct) throws Exception {
+    app.getConnection().prepareStatement("insert into user_data_types (name, active_from, struct_text) values (?, now(), ?)");
     boolean status = false;
     errors.clear();
     PreparedStatement st2 = null;

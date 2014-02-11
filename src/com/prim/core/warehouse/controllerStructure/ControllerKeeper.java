@@ -48,6 +48,10 @@ public final class ControllerKeeper {
   private AbstractApplication app;
   private List<String> errors = new ArrayList();
 
+  public void setApp(AbstractApplication app) {
+    this.app = app;
+  }
+  
   private ControllerKeeper(AbstractApplication app) throws SQLException, Exception {
     this.app = app;
     setDataFromBase();

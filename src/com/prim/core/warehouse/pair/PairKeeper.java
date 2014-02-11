@@ -40,6 +40,10 @@ public class PairKeeper {
   private AbstractApplication app;
   private List<String> errors = new ArrayList();
 
+  public void setApp(AbstractApplication app) {
+    this.app = app;
+  }
+  
   /**
    * получить экземпляр класса
    *
