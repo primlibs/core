@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,7 +26,7 @@ import java.util.Properties;
  */
 public abstract class AbstractApplication implements Serializable {
 
-   public String STRUCTURE_ERROR = "Не существует структуры с подомным именем ";
+   public String STRUCTURE_ERROR = "Не существует структуры с подобным именем ";
   public String ANOTHER_TYPE_ERROR = "Зафиксированы данные другого типа ";
   public String FIND_ERROR = "Ничего не найдено ";
   public String PRIMARY_SEARCH_ERROR = "Ошибка при поиске, первичный ключ не определен ";
@@ -186,6 +187,8 @@ public abstract class AbstractApplication implements Serializable {
   protected String appName = "";
   
   protected Keeper keeper;
+  
+  protected List<UploadedFile> fileList = new ArrayList();
 
   
   protected String optionKeeperPath;
@@ -201,6 +204,12 @@ public abstract class AbstractApplication implements Serializable {
   public String getAppName() {
     return appName;
   }
+
+  public void setFileList(List<UploadedFile> fileList) {
+    this.fileList = fileList;
+  }
+  
+  
   
   /**
    * относительный путь к bi
@@ -568,6 +577,8 @@ public abstract class AbstractApplication implements Serializable {
       this.innerParams = innerParams;
     }
   }
+  
+  
   
   /**
    * установить OptionsSingleton

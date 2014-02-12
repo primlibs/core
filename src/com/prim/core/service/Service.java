@@ -5,6 +5,7 @@
 package com.prim.core.service;
 
 import com.prim.core.AbstractApplication;
+import com.prim.core.UploadedFile;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ import com.prim.core.select.Select;
  */
 public interface Service {
 
+  public void setFileList(List<UploadedFile> fileList);
+  
   /**
    * установить массив с информацией о файлах
    * @param filesPath массив с информацией о файлах

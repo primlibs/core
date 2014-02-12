@@ -5,6 +5,7 @@
 package com.prim.core.controller;
 
 import com.prim.core.AbstractApplication;
+import com.prim.core.UploadedFile;
 import com.prim.core.service.Service;
 import com.prim.core.service.ServiceFactory;
 import com.prim.core.warehouse.controllerStructure.ControllerMethod;
@@ -15,7 +16,9 @@ import com.prim.core.warehouse.controllerStructure.StructureController;
 import com.prim.support.MyString;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -50,6 +53,9 @@ public class Controller {
    * массив для хранения данных внутри контроллера
    */
   private Map<String, Object> innerParams = new HashMap<String, Object>();
+  
+  private List<UploadedFile> fileList = new ArrayList();
+  
   /**
    * запущено ли в тестовом режиме
    */
@@ -94,6 +100,10 @@ public class Controller {
     }else{
       throw new Exception("Application is null on controller");
     }
+  }
+
+  public void setFileList(List<UploadedFile> fileList) {
+    this.fileList = fileList;
   }
   
   /**
@@ -229,6 +239,7 @@ public class Controller {
         Method actionMethod = service.getClass().getMethod(serviceMethod);
         // передать в сервис все параметры запроса
         service.setRequest(newRequest);
+        service.setFileList(fileList);
         app.getConnection().setAutoCommit(false);
         actionMethod.invoke(service);
         StructureController cnt = app.getKeeper().getControllerKeeper().getController(objectName);

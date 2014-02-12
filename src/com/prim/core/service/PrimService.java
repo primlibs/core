@@ -5,6 +5,7 @@
 package com.prim.core.service;
 
 import com.prim.core.AbstractApplication;
+import com.prim.core.UploadedFile;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ import com.prim.support.MyString;
  */
 final class PrimService implements Service {
 
+  private List<UploadedFile> fileList = new ArrayList();
+  
   /**
    * название типа модели
    */
@@ -869,6 +872,11 @@ final class PrimService implements Service {
       model.set("insert_date", FormatDate.getCurrentDateInMysql());
       model.set("insert_user_id", getAuthorizedUserId());
     }
+  }
+
+  @Override
+  public void setFileList(List<UploadedFile> fileList) {
+    this.fileList = fileList;
   }
   
 }
