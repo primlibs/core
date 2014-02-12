@@ -30,7 +30,6 @@ import com.prim.support.filterValidator.ChainValidator;
 import com.prim.support.FormatDate;
 import com.prim.support.MyString;
 
-
 /**
  * класс сервиса, то есть бизнес-логики. От него наследуются другие классы
  * бизнес-логики
@@ -40,7 +39,6 @@ import com.prim.support.MyString;
 final class PrimService implements Service {
 
   private List<UploadedFile> fileList = new ArrayList();
-  
   /**
    * название типа модели
    */
@@ -161,11 +159,11 @@ final class PrimService implements Service {
       } else {
         select.and(table.get("active_to").isNull());
       }
-      if(!descAliases.isEmpty()){
-          for(String al:descAliases){
-              select.order(table.get(al), OrdTypes.ASC);
-          }
-      }     
+      if (!descAliases.isEmpty()) {
+        for (String al : descAliases) {
+          select.order(table.get(al), OrdTypes.ASC);
+        }
+      }
       boolean status = select.executeSelect(app.getConnection());
       actionResult.select(select);
       setDictionary();
@@ -178,7 +176,7 @@ final class PrimService implements Service {
   @Override
   public void findActiveByDate(String date) {
 
-    ChainValidator chVal = ChainValidator.getInstance("DateToFormatFilter","DateFormatValidator");
+    ChainValidator chVal = ChainValidator.getInstance("DateToFormatFilter", "DateFormatValidator");
     Map<String, Object> map = new HashMap<String, Object>();
 
 
@@ -206,11 +204,11 @@ final class PrimService implements Service {
           rs.add(table.get("active_to").isNull());
           select.andOr(rs);
         }
-        if(!descAliases.isEmpty()){
-          for(String al:descAliases){
-              select.order(table.get(al), OrdTypes.ASC);
+        if (!descAliases.isEmpty()) {
+          for (String al : descAliases) {
+            select.order(table.get(al), OrdTypes.ASC);
           }
-      } 
+        }
         select.executeSelect(app.getConnection());
         actionResult.select(select);
         setDictionary();
@@ -360,7 +358,7 @@ final class PrimService implements Service {
     try {
       Model model = modelFactory.getModel(modelName);
       boolean status = false;
-      model.set(request);      
+      model.set(request);
       if (!getModel().isModelSystem()) {
         model.set("update_user_id", authorizedUserId);
         model.set("update_date", FormatDate.getDateInMysql(operationDate));
@@ -369,7 +367,7 @@ final class PrimService implements Service {
         status = false;
         actionResult.addError("Не обнаружен первичный ключ " + model.getPrimaryAlias());
       } else {
-        status = model.save();        
+        status = model.save();
         actionResult.model(model.getDinamicModel());
       }
       // присвоить в actionResult все параметры модели
@@ -481,11 +479,11 @@ final class PrimService implements Service {
       select.select(table);
       select.from(table);
       select.and(table.getPrimary().isNotNull());
-      if(!descAliases.isEmpty()){
-          for(String al:descAliases){
-              select.order(table.get(al), OrdTypes.ASC);
-          }
-      } 
+      if (!descAliases.isEmpty()) {
+        for (String al : descAliases) {
+          select.order(table.get(al), OrdTypes.ASC);
+        }
+      }
       boolean status = select.executeSelect(app.getConnection());
       actionResult.select(select);
       setDictionary();
@@ -627,8 +625,9 @@ final class PrimService implements Service {
   /**
    * в объекте ActionResult установить словарь, т.е. массив информации для
    * вывода комбо
-   * 
-   * Этот метод должен вызываться после того, как результаты запроса загружены в actionResult.
+   *
+   * Этот метод должен вызываться после того, как результаты запроса загружены в
+   * actionResult.
    */
   public void setDictionary() {
     try {
@@ -805,7 +804,8 @@ final class PrimService implements Service {
 
   /**
    * установить имена полей, которые будут выводиться в комбо.
-   * @param name 
+   *
+   * @param name
    */
   @Override
   public void setDictAliases(String... name) {
@@ -841,7 +841,7 @@ final class PrimService implements Service {
   public void addMessage(List<String> msg) {
     actionResult.addMessage(msg);
   }
-  
+
   @Override
   public String[] getReqArray(String paramName) {
     if (getReq(paramName) != null) {
@@ -857,13 +857,13 @@ final class PrimService implements Service {
     String[] array = new String[0];
     return array;
   }
-  
+
   @Override
   public void registerException(Exception exc) {
     setStatus(false);
     addError(MyString.getStackExeption(exc));
   }
-  
+
   @Override
   public void setStandartFields(Model model, boolean isNewModel) {
     model.set("update_date", FormatDate.getCurrentDateInMysql());
@@ -878,5 +878,18 @@ final class PrimService implements Service {
   public void setFileList(List<UploadedFile> fileList) {
     this.fileList = fileList;
   }
-  
+
+  public void executeSelect(Select select) throws Exception {
+    boolean ok = select.executeSelect(getConnection());
+    if (!ok) {
+      throw new Exception(select.getError().toString());
+    }
+  }
+
+  public void saveModel(Model model) throws Exception {
+    boolean ok = model.save();
+    if (!ok) {
+      throw new Exception(model.getError().toString());
+    }
+  }
 }

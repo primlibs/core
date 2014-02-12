@@ -15,6 +15,7 @@ import java.util.Map;
  * @author кот
  */
 public interface Select {
+  
   /**
    * добавить в блок Select все параметры из таблицы
    *

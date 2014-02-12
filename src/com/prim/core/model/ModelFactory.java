@@ -36,6 +36,11 @@ public class ModelFactory {
       this.app = app;
     }
   }
+  
+  public static Model getModel(AbstractApplication app, String tableAlias) throws Exception {
+    ModelFactory mf = new ModelFactory(app);
+    return mf.getModel(tableAlias);
+  }
 
   /**
    * получить модель
