@@ -15,18 +15,18 @@ public class UploadedFile {
    */
   private String temporaryPath;
   /**
-   * пользовательское название
+   * название, под которым файл был загружен
    */
-  private String initialName;
+  private String namr;
 
   /**
    * 
    * @param temporaryPath полное имя файл во временной директории
-   * @param clientName пользовательское название файла
+   * @param name название, под которым файл был загружен
    */
-  public UploadedFile(String temporaryPath, String clientName) {
+  public UploadedFile(String temporaryPath, String name) {
     this.temporaryPath = temporaryPath;
-    this.initialName = clientName;
+    this.namr = name;
   }
 
   /**
@@ -41,8 +41,8 @@ public class UploadedFile {
    * 
    * @return 
    */
-  public String getIntialName() {
-    return initialName;
+  public String getName() {
+    return namr;
   }
 
   /**

@@ -547,20 +547,20 @@ final class PrimService implements Service {
   /**
    * сохранить файлы
    */
+  @Override
   public void saveFiles() {
     try {
       Model model = modelFactory.getModel(modelName);
       model.set(request);
       boolean status = false;
-      filesMap = (HashMap<String, String>) request.get("_FILEARRAY_");
-      if (filesMap == null || filesMap.isEmpty()) {
+      if (fileList == null || fileList.isEmpty()) {
         actionResult.addError("Не переданы файлы или размер одного из файлов превышает " + app.getMaxUploadSizeMB() + " МВ");
         actionResult.set(model.getPrimaryAlias(), model.get(model.getPrimaryAlias()));
       } else {
         if (model.findByPrimary()) {
-          for (String uniqueName : filesMap.keySet()) {
-            if (filesMap.get(uniqueName) != null && !"".equals(uniqueName)) {
-              status = model.copyFile(uniqueName, filesMap.get(uniqueName), authorizedUserId, operationDate);
+          for (UploadedFile file : fileList) {
+            if (file.getTemporaryPath() != null && !file.getTemporaryPath().isEmpty()) {
+              status = model.copyFile(file.getTemporaryPath(), file.getName(), authorizedUserId, operationDate);
             } else {
               actionResult.addError("Невозможно определить файл");
             }
