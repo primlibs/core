@@ -892,4 +892,9 @@ final class PrimService implements Service {
       throw new Exception(model.getError().toString());
     }
   }
+
+  @Override
+  public List<UploadedFile> getFileList() {
+    return fileList;
+  }
 }

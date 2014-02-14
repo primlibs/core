@@ -39,6 +39,8 @@ public interface Service {
   public void setRequest(Map<String, Object> request);
 
   public void setFileId(int fileId);
+  
+  public List<UploadedFile> getFileList();
 
   /**
    * получить объект ActionResult, который представляет собой результат
