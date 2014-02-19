@@ -878,7 +878,8 @@ final class PrimService implements Service {
   public void setFileList(List<UploadedFile> fileList) {
     this.fileList = fileList;
   }
-
+  
+/*
   public void executeSelect(Select select) throws Exception {
     boolean ok = select.executeSelect(getConnection());
     if (!ok) {
@@ -890,6 +891,27 @@ final class PrimService implements Service {
     boolean ok = model.save();
     if (!ok) {
       throw new Exception(model.getError().toString());
+    }
+  }
+*/
+  
+  @Override
+  public void executeSelect(Select select) throws Exception {
+    boolean ok = select.executeSelect(getConnection());
+    if (!ok) {
+      setStatus(false);
+      addError(select.getError());
+      throw new Exception();
+    }
+  }
+  
+  @Override
+  public void saveModel(Model model) throws Exception {
+    boolean ok = model.save();
+    if (!ok) {
+      setStatus(false);
+      addError(model.getError());
+      throw new Exception();
     }
   }
 
