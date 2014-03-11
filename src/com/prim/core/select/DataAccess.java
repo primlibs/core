@@ -38,7 +38,7 @@ public class DataAccess {
                     cnds.add(table.get(key).eq(value));
                 }
             }
-            List<DinamicModel> dmList=searchByParams(app, table, null, null,null,null, cnds);
+            List<DinamicModel> dmList = searchByParams(app, table, null, null, null, null, cnds);
             List<Model> modelList = new ArrayList();
             for (DinamicModel dm : dmList) {
                 Model model = ModelFactory.getModel(app, modelName);
@@ -49,13 +49,12 @@ public class DataAccess {
         }
     }
 
-    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit,Condition... cnd ) throws Exception{
-        List<Condition> cnds=Arrays.asList(cnd);
+    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
+        List<Condition> cnds = Arrays.asList(cnd);
         return searchByParams(app, table, sort, ty, limitFrom, limit, cnds);
     }
-    
-    
-    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit,List<Condition> cnd) throws Exception {
+
+    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, List<Condition> cnd) throws Exception {
         List<DinamicModel> result = new ArrayList<DinamicModel>();
         Select sel = TableSelectFactory.getSelect(app, table);
         if (limit != null) {
@@ -78,9 +77,19 @@ public class DataAccess {
         return result;
     }
 
+    public DinamicModel searchOneByParams(AbstractApplication app, Table tb, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
+        List<DinamicModel> result = searchByParams(app, tb, sort, ty, limitFrom, limit, cnd);
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0);
+        }
+    }
+    
     static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Condition... cnd) throws Exception {
         return searchByParams(app, table, null, null, null, null, cnd);
     }
+
     static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, List<Condition> cnd) throws Exception {
         return searchByParams(app, table, null, null, null, null, cnd);
     }
