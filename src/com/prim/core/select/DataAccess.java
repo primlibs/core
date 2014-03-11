@@ -9,6 +9,7 @@ import com.prim.core.model.DinamicModel;
 import com.prim.core.model.Model;
 import com.prim.core.model.ModelFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,21 +29,16 @@ public class DataAccess {
             return new ArrayList();
         } else {
             Table table = TableSelectFactory.getTable(app, modelName);
-            Select sel = TableSelectFactory.getSelect(app);
-            sel.select(table).from(table);
+            List<Condition> cnds = new ArrayList();
             for (String key : params.keySet()) {
                 Object value = params.get(key);
                 if (value == null) {
-                    sel.and(table.get(key).isNull());
+                    cnds.add(table.get(key).isNull());
                 } else {
-                    sel.and(table.get(key).eq(value));
+                    cnds.add(table.get(key).eq(value));
                 }
             }
-            boolean ok = sel.executeSelect(app.getConnection());
-            if (!ok) {
-                throw new Exception(sel.getError().toString());
-            }
-            List<DinamicModel> dmList = sel.getDinamicList();
+            List<DinamicModel> dmList=searchByParams(app, table, null, null,null,null, cnds);
             List<Model> modelList = new ArrayList();
             for (DinamicModel dm : dmList) {
                 Model model = ModelFactory.getModel(app, modelName);
@@ -53,7 +49,13 @@ public class DataAccess {
         }
     }
 
-    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
+    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit,Condition... cnd ) throws Exception{
+        List<Condition> cnds=Arrays.asList(cnd);
+        return searchByParams(app, table, sort, ty, limitFrom, limit, cnds);
+    }
+    
+    
+    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit,List<Condition> cnd) throws Exception {
         List<DinamicModel> result = new ArrayList<DinamicModel>();
         Select sel = TableSelectFactory.getSelect(app, table);
         if (limit != null) {
@@ -77,6 +79,9 @@ public class DataAccess {
     }
 
     static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Condition... cnd) throws Exception {
+        return searchByParams(app, table, null, null, null, null, cnd);
+    }
+    static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, List<Condition> cnd) throws Exception {
         return searchByParams(app, table, null, null, null, null, cnd);
     }
 }
