@@ -92,6 +92,7 @@ public class TableSelectFactory {
     }
   }
 
+  @Deprecated
   public List<DinamicModel> searchByParams(Table tb, Connection conn, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
     List<DinamicModel> result = new ArrayList<DinamicModel>();
     Select sel = getSelect(tb);
@@ -128,6 +129,7 @@ public class TableSelectFactory {
    * @return
    * @throws Exception
    */
+  @Deprecated
   public DinamicModel searchOneByParams(Table tb, Connection conn, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
     List<DinamicModel> result = searchByParams(tb, conn, sort, ty, limitFrom, limit, cnd);
     if (result.isEmpty()) {
@@ -146,6 +148,7 @@ public class TableSelectFactory {
    * @return
    * @throws Exception
    */
+  @Deprecated
   public DinamicModel searchOneByParams(Table tb, Connection conn, Condition... cnd) throws Exception {
     return searchOneByParams(tb, conn, null, null, null, null, cnd);
   }
