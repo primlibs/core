@@ -77,13 +77,17 @@ public class DataAccess {
         return result;
     }
 
-    public DinamicModel searchOneByParams(AbstractApplication app, Table tb, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
+    static public DinamicModel searchOneByParams(AbstractApplication app, Table tb, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
         List<DinamicModel> result = searchByParams(app, tb, sort, ty, limitFrom, limit, cnd);
         if (result.isEmpty()) {
             return null;
         } else {
             return result.get(0);
         }
+    }
+    
+    static public DinamicModel searchOneByParams(AbstractApplication app, Table table, Condition... cnd) throws Exception {
+        return searchOneByParams(app, table, null, null, null, null, cnd);
     }
     
     static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Condition... cnd) throws Exception {
