@@ -851,7 +851,7 @@ class SelectMysql implements Select {
         } else if (ct == CondType.equals) {
             res += "=" + AnaliseParams(par2, true);
         } else if (ct == CondType.exists) {
-            res += " exists (" + AnaliseParams(par2, true)+") ";
+            res += " exists (" + par2+") ";
         } else if (ct == CondType.isNotNull) {
             res += "is not NULL";
         } else if (ct == CondType.isNull) {
@@ -873,7 +873,7 @@ class SelectMysql implements Select {
         } else if (ct == CondType.notEquals) {
             res += "!=" + AnaliseParams(par2, true);
         } else if (ct == CondType.notExists) {
-            res += " not exists (" + AnaliseParams(par2, true)+") ";
+            res += " not exists ("+par2+") ";
         } else if (ct == CondType.notLike) {
             res = "lower(" + res + ") not like lower ('%" + AnaliseParams(par2, false) + "%')";
         }
