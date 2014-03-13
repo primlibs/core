@@ -355,6 +355,7 @@ public interface Select {
   public Map<String, Field> getStructure() throws CloneNotSupportedException ;
   public Select setCashable(Boolean cashable);
   public String validateParameter(Object param, Boolean quoted);
-  
-  
+ 
+  public Condition getExistCondition(String subquery);
+  public Condition getNotExistCondition(String subquery);
 }

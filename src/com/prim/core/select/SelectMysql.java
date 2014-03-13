@@ -838,8 +838,10 @@ class SelectMysql implements Select {
     }
 
     private String getOrAnd(Condition cond) {
-        String res = " ";
-        res += cond.getParamFirst().getTable().getModelTbAlias() + "." + cond.getParamFirst().getRealName() + " ";
+        String res = " ";      
+        if(cond.getParamFirst()!=null){
+            res += cond.getParamFirst().getTable().getModelTbAlias() + "." + cond.getParamFirst().getRealName() + " ";
+        }
         CondType ct = cond.getCondType();
         Object par2 = cond.getParamSecond();
         if (ct == CondType.bigger) {
@@ -849,7 +851,7 @@ class SelectMysql implements Select {
         } else if (ct == CondType.equals) {
             res += "=" + AnaliseParams(par2, true);
         } else if (ct == CondType.exists) {
-            res += "exists" + AnaliseParams(par2, true);
+            res += " exists (" + AnaliseParams(par2, false)+") ";
         } else if (ct == CondType.isNotNull) {
             res += "is not NULL";
         } else if (ct == CondType.isNull) {
@@ -871,7 +873,7 @@ class SelectMysql implements Select {
         } else if (ct == CondType.notEquals) {
             res += "!=" + AnaliseParams(par2, true);
         } else if (ct == CondType.notExists) {
-            res += "not exists" + AnaliseParams(par2, true);
+            res += " not exists (" + AnaliseParams(par2, false)+") ";
         } else if (ct == CondType.notLike) {
             res = "lower(" + res + ") not like lower ('%" + AnaliseParams(par2, false) + "%')";
         }
@@ -967,5 +969,15 @@ class SelectMysql implements Select {
             paramVal = "NULL";
         }
         return paramVal;
+    }
+
+    @Override
+    public Condition getExistCondition(String subquery) {
+        return ConditionMysql.getInstance(null, CondType.exists, subquery);
+    }
+
+    @Override
+    public Condition getNotExistCondition(String subquery) {
+       return ConditionMysql.getInstance(null, CondType.notExists, subquery);
     }
 }
