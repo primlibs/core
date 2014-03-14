@@ -226,6 +226,15 @@ public interface Select {
    */
   public Select andOrList(List<Condition>... cond)throws CloneNotSupportedException ;
 
+    /**
+   * добавить несколько списков условий через OR. <br/><br/> к блоку where
+   * добавляется: AND ( (условие 1 and условие 2) OR (условие 3 and условие 4)
+   * OR ... )
+   *
+   * @param cond условия
+   */
+  public Select andOrList(List<List<Condition>> cond)throws CloneNotSupportedException ;
+  
   /**
    * добавить условия and в блок where
    *

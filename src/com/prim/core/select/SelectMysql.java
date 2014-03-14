@@ -519,31 +519,7 @@ class SelectMysql implements Select {
      */
     @Override
     public SelectMysql andOrList(List<Condition>... cond) throws CloneNotSupportedException {
-        if (and == false) {
-            resultSelect += " WHERE 1=1 ";
-            resultSelect += getDefaultCondition();
-        }
-        resultSelect += "and ( ";
-        Integer cnt = 0;
-        for (List<Condition> cnd : cond) {
-            if (cnd.size() > 0) {
-                if (cnt > 0) {
-                    resultSelect += "or";
-                }
-                resultSelect += "(";
-                for (Condition cnd1 : cnd) {
-                    if (cnd.indexOf(cnd1) > 0) {
-                        resultSelect += " and " + getOrAnd(cnd1);
-                    } else {
-                        resultSelect += " " + getOrAnd(cnd1);
-                    }
-                }
-                resultSelect += ")";
-                cnt++;
-            }
-        }
-        resultSelect += ") ";
-        return this;
+        return andOrList(Arrays.asList(cond));
     }
 
     /**
@@ -979,5 +955,34 @@ class SelectMysql implements Select {
     @Override
     public Condition getNotExistCondition(String subquery) {
        return ConditionMysql.getInstance(null, CondType.notExists, subquery);
+    }
+
+    @Override
+    public SelectMysql andOrList(List<List<Condition>> cond) throws CloneNotSupportedException {
+        if (and == false) {
+            resultSelect += " WHERE 1=1 ";
+            resultSelect += getDefaultCondition();
+        }
+        resultSelect += "and ( ";
+        Integer cnt = 0;
+        for (List<Condition> cnd : cond) {
+            if (cnd.size() > 0) {
+                if (cnt > 0) {
+                    resultSelect += "or";
+                }
+                resultSelect += "(";
+                for (Condition cnd1 : cnd) {
+                    if (cnd.indexOf(cnd1) > 0) {
+                        resultSelect += " and " + getOrAnd(cnd1);
+                    } else {
+                        resultSelect += " " + getOrAnd(cnd1);
+                    }
+                }
+                resultSelect += ")";
+                cnt++;
+            }
+        }
+        resultSelect += ") ";
+        return this;
     }
 }
