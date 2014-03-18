@@ -695,7 +695,7 @@ final class PrimService implements Service {
    */
   @Override
   public Model getModel() throws Exception {
-    return modelFactory.getModel(modelName);
+    return getModel(modelName);
   }
 
   @Override
