@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prim.core.modelStructure;
+package com.prim.core.warehouse;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,8 +12,16 @@ import java.util.Map;
  * 
  * @author Rice Pavel
  */
-public enum FieldTypes {
+public enum DataTypes {
   
   INT, BOOL, CHAR, DATETIME, DECIMAL, TEXT, REF; 
+  
+ public static Map<String, Object> all() {
+    Map<String, Object> map = new LinkedHashMap();
+    for (DataTypes type : DataTypes.values()) {
+      map.put(type.toString(), type.toString());
+    }
+    return map;
+  }
   
 }
