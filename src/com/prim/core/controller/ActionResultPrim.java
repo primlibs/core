@@ -29,31 +29,35 @@ public class ActionResultPrim implements ActionResult, ToXml {
   /**
    * словарь, т.е. массив информации для вывода комбо
    */
-  protected Map<String, Object> dictionary = new LinkedHashMap<String, Object>();
+  Map<String, Object> dictionary = new LinkedHashMap<String, Object>();
   /**
    * массив для хранения произвольных сообщений
    */
-  protected List<String> messageList = new ArrayList<String>();
+  List<String> messageList = new ArrayList<String>();
   /**
    * ошибки
    */
-  protected List<String> errors = new ArrayList<String>();
+  List<String> errors = new ArrayList<String>();
+  
   /**
    * результат выполнения действия - успешно или неуспешно
    */
-  protected Boolean status = true;
+
   /**
    * название объекта, который выполнил действие
    */
-  protected String objectName = "";
+  String objectName = "";
   /**
    * алиас объекта, который выполнил действие
    */
-  protected String objectAlias = "";
+  String objectAlias = "";
   /**
    * имя в приложении объекта, который выполнил действие
    */
-  protected String appName = "";
+  String appName = "";
+  
+  StatusCodes statusCode= StatusCodes.TRUE;
+  
 
   private ActionResultPrim() {
   }
@@ -73,7 +77,7 @@ public class ActionResultPrim implements ActionResult, ToXml {
     dinamicArrayList.add(model);
     errors = model.getError();
     if (!errors.isEmpty()) {
-      status = false;
+      statusCode = StatusCodes.BIZ;
     }
   }
 
@@ -89,8 +93,8 @@ public class ActionResultPrim implements ActionResult, ToXml {
    *
    * @return результат выполнения действия - успешно или неуспешно
    */
-  public Boolean getStatus() {
-    return status;
+  public StatusCodes getStatus() {
+    return statusCode;
   }
 
   /**
@@ -161,7 +165,7 @@ public class ActionResultPrim implements ActionResult, ToXml {
     dinamicArrayList.addAll(select.getDinamicList());
     errors = select.getError();
     if (!errors.isEmpty()) {
-      status = false;
+      statusCode = StatusCodes.BIZ;
     }
   }
 
@@ -227,8 +231,8 @@ public class ActionResultPrim implements ActionResult, ToXml {
    *
    * @param boo
    */
-  public void setStatus(Boolean boo) {
-    status = boo;
+  public void setStatus(StatusCodes boo) {
+    statusCode = boo;
   }
 
   /**
@@ -361,4 +365,13 @@ public class ActionResultPrim implements ActionResult, ToXml {
     Gson gson = new Gson();
     return gson.toJson(this);
   }
+
+    @Override
+    public void setStatus(Boolean boo) {
+        if(boo==true){
+            setStatus(statusCode.TRUE);
+        }else{
+            setStatus(statusCode.BIZ);
+        }
+    }
 }

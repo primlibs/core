@@ -121,7 +121,7 @@ public class Controller {
    * @return
    * @throws Exception
    */
-  public boolean run() throws Exception {
+  public StatusCodes run() throws Exception {
     // получить массив информации о действиях данного контроллера
     ControllerMethod method = app.getKeeper().getControllerKeeper().getOneControllerMethod(objectName, methodName);
     if (method == null) {
@@ -131,15 +131,15 @@ public class Controller {
       String msg="";
       throw new Exception("Недостаточно прав для выполнения: " + objectName + " " + methodName + " для пользователя " + rightsObject.getUserId());
     }
-    boolean result = false;
+    StatusCodes result = StatusCodes.BIZ;
     connection.setAutoCommit(false);
     for (ControllerService cs : method.getServiceList()) {
       result = executeService(cs);
-      if (!result) {
+      if (!result.equals(StatusCodes.TRUE)) {
         break;
       }
     }
-    if (result == true && test == false) {
+    if (result.equals(StatusCodes.TRUE) && test == false) {
       connection.commit();
     } else {
       connection.rollback();
@@ -194,7 +194,7 @@ public class Controller {
    *
    * @param actionData
    */
-  private boolean executeService(ControllerService serv) throws Exception {
+  private StatusCodes executeService(ControllerService serv) throws Exception {
     String serviceName = serv.getServiceName();
     String serviceMethod = serv.getServiceAction();
     info += "request: " + request + "</br>";
@@ -271,7 +271,7 @@ public class Controller {
     } catch (Exception e) {
       actionResult = ActionResultPrim.getInstance();
       actionResult.addError(MyString.getStackExeption(e));
-      actionResult.setStatus(false);
+      actionResult.setStatus(StatusCodes.CONTROLLER);
       throw new Exception("method  " + serviceMethod + " service " + serviceName + ": " + MyString.getStackExeption(e));
     }
     return actionResult.getStatus();

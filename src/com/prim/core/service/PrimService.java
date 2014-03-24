@@ -18,6 +18,7 @@ import java.util.Map;
 import com.prim.core.controller.ActionResult;
 import com.prim.core.controller.ActionResultPrim;
 import com.prim.core.controller.RightsObject;
+import com.prim.core.controller.StatusCodes;
 import com.prim.core.model.DinamicModel;
 import com.prim.core.model.Model;
 import com.prim.core.model.ModelFactory;
@@ -168,7 +169,7 @@ final class PrimService implements Service {
       actionResult.select(select);
       setDictionary();
     } catch (Exception ex) {
-      actionResult.setStatus(false);
+      actionResult.setStatus(StatusCodes.BIZ);
       actionResult.addError(MyString.getStackExeption(ex));
     }
   }
@@ -213,11 +214,11 @@ final class PrimService implements Service {
         actionResult.select(select);
         setDictionary();
       } catch (Exception ex) {
-        actionResult.setStatus(false);
+        actionResult.setStatus(StatusCodes.BIZ);
         actionResult.addError(MyString.getStackExeption(ex));
       }
     } else {
-      actionResult.setStatus(false);
+      actionResult.setStatus(StatusCodes.BIZ);
       actionResult.addError(chVal.getErrors());
     }
 
@@ -235,11 +236,11 @@ final class PrimService implements Service {
         actionResult.set("zip", bytes);
         actionResult.addError(innerPost.getError());
       } else {
-        actionResult.setStatus(false);
+        actionResult.setStatus(StatusCodes.BIZ);
         actionResult.addError("не найдена модель по ИД");
       }
     } catch (Exception e) {
-      actionResult.setStatus(false);
+      actionResult.setStatus(StatusCodes.BIZ);
       actionResult.addError(MyString.getStackExeption(e));
     }
   }
@@ -300,7 +301,7 @@ final class PrimService implements Service {
       setDictionary();
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " searchById()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -326,7 +327,7 @@ final class PrimService implements Service {
       setDictionary();
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " searchById()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -347,7 +348,7 @@ final class PrimService implements Service {
       }
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " deleteById()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -377,7 +378,7 @@ final class PrimService implements Service {
       clearBaseCashes();
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " updateModel()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -406,11 +407,15 @@ final class PrimService implements Service {
           actionResult.set(name, model.get(name));
         }
       }
-      actionResult.setStatus(status);
+      if(status==true){
+        actionResult.setStatus(StatusCodes.TRUE);
+      }else{
+        actionResult.setStatus(StatusCodes.BIZ);
+      }
       clearBaseCashes();
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " closeModel()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -426,7 +431,7 @@ final class PrimService implements Service {
       actionResult.model(model.getDinamicModel());
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " setStructure()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -463,7 +468,7 @@ final class PrimService implements Service {
       actionResult.setStatus(status);
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " saveModel()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -489,7 +494,7 @@ final class PrimService implements Service {
       setDictionary();
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " findAll()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
 
   }
@@ -511,7 +516,7 @@ final class PrimService implements Service {
       actionResult.model(model.getDinamicModel());
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " deleteAllFiles()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -538,7 +543,7 @@ final class PrimService implements Service {
       actionResult.setStatus(status);
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " deleteFile()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -578,7 +583,7 @@ final class PrimService implements Service {
       actionResult.setStatus(status);
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " saveFiles()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -618,7 +623,7 @@ final class PrimService implements Service {
       actionResult.setStatus(status);
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " getFile()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -655,7 +660,7 @@ final class PrimService implements Service {
       actionResult.setDictionary(resultHash);
     } catch (Exception e) {
       actionResult.addError(MyString.getStackExeption(e) + " " + modelName + " setDictionary()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -683,7 +688,7 @@ final class PrimService implements Service {
       actionResult.addError(md.getError());
     } catch (Exception e) {
       actionResult.addError(MyString.getStackExeption(e) + " " + modelName + " saveFile()");
-      actionResult.setStatus(Boolean.FALSE);
+      actionResult.setStatus(StatusCodes.BIZ);
     }
   }
 
@@ -748,7 +753,7 @@ final class PrimService implements Service {
 
   @Override
   public void setStatus(Boolean sts) {
-    actionResult.setStatus(sts);
+    actionResult.setStatus(StatusCodes.BIZ);
   }
 
   @Override
