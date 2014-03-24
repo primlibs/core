@@ -36,7 +36,7 @@ public interface ActionResult extends ToXml, ToJson {
    *
    * @return результат выполнения действия - успешно или неуспешно
    */
-  public Boolean getStatus();
+  public StatusCodes getStatus();
 
   /**
    *
@@ -121,6 +121,13 @@ public interface ActionResult extends ToXml, ToJson {
   public List<DinamicModel> getDinamicArrayList();
 
   /**
+   * установить результат выполнения действия - успешно или неуспешно
+   *
+   * @param boo
+   */
+  public void setStatus(StatusCodes boo);
+  
+    /**
    * установить результат выполнения действия - успешно или неуспешно
    *
    * @param boo
