@@ -4,7 +4,7 @@
  */
 package com.prim.core.modelStructure;
 
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
@@ -46,7 +46,7 @@ final public class FieldFabric {
       updatable = Boolean.parseBoolean(fieldElement.getElementsByTagName("updatable").item(0).getChildNodes().item(0).getNodeValue());
     }
 
-    DataTypes dataType = DataTypes.NONE;
+    DataTypes dataType = DataTypes.CHAR;
     String type = fieldElement.getElementsByTagName("type").item(0).getChildNodes().item(0).getNodeValue();
     if (type != null) {
       for (DataTypes t: DataTypes.values()) {

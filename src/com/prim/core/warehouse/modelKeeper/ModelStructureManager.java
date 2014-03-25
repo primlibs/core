@@ -11,7 +11,7 @@ import com.prim.core.modelStructure.Unique;
 import com.prim.core.modelStructure.UniqueObject;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.core.warehouse.WarehouseSingleton;
 import com.prim.support.MyString;
 import com.prim.support.filterValidator.entity.DateFormatValidator;
@@ -779,17 +779,19 @@ public class ModelStructureManager {
     List<String> textNames = Arrays.asList(textArray);
     List<String> refNames = Arrays.asList(refArray);
     // определить один общий массив для всех типов
-    Map<DataTypes, List<String>> map = new HashMap<DataTypes, List<String>>();
-    map.put(DataTypes.INT, intNames);
-    map.put(DataTypes.BOOL, intNames);
-    map.put(DataTypes.CHAR, varcharNames);
-    map.put(DataTypes.DATETIME, datetimeNames);
-    map.put(DataTypes.DECIMAL, decimalNames);
-    map.put(DataTypes.TEXT, textNames);
-    map.put(DataTypes.REF, refNames);
-    DataTypes newType = type;
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    map.put("INT", intNames);
+    map.put("BOOL", intNames);
+    map.put("CHAR", varcharNames);
+    map.put("DATETIME", datetimeNames);
+    map.put("DECIMAL", decimalNames);
+    map.put("TEXT", textNames);
+    map.put("REF", refNames);
+    String newType;
     if (type.equals(DataTypes.INT) && rel == true) {
-      newType = DataTypes.REF;
+      newType = "REF";
+    } else {
+      newType = type.toString().toUpperCase();
     }
     // получить массив названий полей, соответствующий типу
     // если такой массив существует

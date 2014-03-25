@@ -1,6 +1,6 @@
 package com.prim.core.modelStructure;
 
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.io.Serializable;
 import java.util.*;

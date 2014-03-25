@@ -4,7 +4,7 @@
  */
 package com.prim.core.warehouse.controllerStructure;
 
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.ToXml;
 import com.prim.support.primXml;
 import java.io.Serializable;
@@ -22,19 +22,20 @@ public class ServiceParameter implements Serializable, ToXml {
   private String name;
   private ControllerOrigin origin = ControllerOrigin.Request;
   private boolean mandatory;
-  private DataTypes dataType = DataTypes.NONE;
-  
+  private DataTypes dataType = DataTypes.CHAR;
+  boolean array = false;
 
   public ServiceParameter(String name) {
         this.name = name;
   }
   
-  ServiceParameter(String alias, ControllerOrigin origin,String name, boolean mandatory, DataTypes dataType) {
+  ServiceParameter(String alias, ControllerOrigin origin,String name, boolean mandatory, DataTypes dataType, boolean array) {
     this.alias = alias;
     this.origin = origin;
     this.name = name;
     this.mandatory = mandatory;
     this.dataType = dataType;
+    this.array = array;
   }
 
   public static ServiceParameter getFromXml(Element elem) {
@@ -50,10 +51,17 @@ public class ServiceParameter implements Serializable, ToXml {
     
     boolean mandatory = false;
     String mandatoryString = primXml.getValue(elem, "mandatory");
-    if (mandatoryString != null && mandatoryString.trim().equals("true")) {
+    if (mandatoryString != null && mandatoryString.trim().equalsIgnoreCase("true")) {
       mandatory = true;
     }
-    DataTypes dataType = DataTypes.NONE;
+    
+    boolean array = false;
+    String arrayString = primXml.getValue(elem, "array");
+    if (arrayString != null && arrayString.trim().equalsIgnoreCase("true")) {
+      array = true;
+    }
+    
+    DataTypes dataType = DataTypes.CHAR;
     String dataTypeString = primXml.getValue(elem, "dataType");
     if (dataTypeString != null) {
       for (DataTypes type: DataTypes.values()) {
@@ -71,9 +79,19 @@ public class ServiceParameter implements Serializable, ToXml {
         break;
       }
     }
-    return new ServiceParameter(alias, origin, name, mandatory, dataType);    
+    return new ServiceParameter(alias, origin, name, mandatory, dataType, array);    
   }
 
+  public boolean isArray() {
+    return array;
+  }
+
+  public void setArray(boolean array) {
+    this.array = array;
+  }
+
+  
+  
   public boolean isMandatory() {
     return mandatory;
   }
@@ -118,6 +136,7 @@ public class ServiceParameter implements Serializable, ToXml {
     primXml.createElement(doc, parameter, "name", name);
     primXml.createElement(doc, parameter, "origin", origin);
     primXml.createElement(doc, parameter, "mandatory", mandatory);
+    primXml.createElement(doc, parameter, "array", array);
     primXml.createElement(doc, parameter, "dataType", dataType);
   }
   

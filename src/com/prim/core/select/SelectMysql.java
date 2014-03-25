@@ -10,7 +10,7 @@ import com.prim.core.model.DinamicModel;
 import com.prim.core.model.ModelFactory;
 import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.MyString;
 import java.sql.Connection;
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.modelStructure.Unique;
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.util.HashMap;
 import org.w3c.dom.*;

@@ -9,7 +9,7 @@ import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.io.CharArrayWriter;
 import java.io.File;

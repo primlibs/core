@@ -9,7 +9,7 @@ import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import java.util.ArrayList;
 import java.util.Map;
 

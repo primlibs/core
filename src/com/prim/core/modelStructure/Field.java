@@ -4,7 +4,7 @@
  */
 package com.prim.core.modelStructure;
 
-import com.prim.core.warehouse.DataTypes;
+import com.prim.support.enums.DataTypes;
 import com.prim.support.ToXml;
 import java.util.List;
 
