@@ -6,6 +6,7 @@ import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.modelStructure.Unique;
+import com.prim.core.warehouse.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.util.HashMap;
 import org.w3c.dom.*;
@@ -89,13 +90,16 @@ public class SystemModelStructure {
           }
           valList.add(validator);
         }
+        
+        DataTypes dataType = DataTypes.getTypeByString(fieldAttr.getNamedItem("type").getNodeValue());
+        
         Field field = FieldFabric.getField(
                 fieldAlias,
                 fieldAlias,
                 fieldAttr.getNamedItem("appname").getNodeValue(),
                 Boolean.parseBoolean(fieldAttr.getNamedItem("mandatory").getNodeValue()),
                 Boolean.parseBoolean(fieldAttr.getNamedItem("updatable").getNodeValue()),
-                fieldAttr.getNamedItem("type").getNodeValue(),
+                dataType,
                 fieldAttr.getNamedItem("relations").getNodeValue(),
                 def,
                 valList,

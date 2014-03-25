@@ -4,6 +4,7 @@
  */
 package com.prim.core.modelStructure;
 
+import com.prim.core.warehouse.DataTypes;
 import com.prim.support.ToXml;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public interface Field extends ToXml{
 
   public String getRelations();
 
-  public String getType();
+  public DataTypes getType();
 
   public List<ValidatorAbstract> getCloneValidatorList()throws CloneNotSupportedException ;
 

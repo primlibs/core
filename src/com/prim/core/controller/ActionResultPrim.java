@@ -93,7 +93,17 @@ public class ActionResultPrim implements ActionResult, ToXml {
    *
    * @return результат выполнения действия - успешно или неуспешно
    */
-  public StatusCodes getStatus() {
+  @Override
+  public Boolean getStatus() {
+    if (statusCode.equals(StatusCodes.TRUE)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  @Override
+  public StatusCodes getStatusCode() {
     return statusCode;
   }
 
@@ -231,7 +241,7 @@ public class ActionResultPrim implements ActionResult, ToXml {
    *
    * @param boo
    */
-  public void setStatus(StatusCodes boo) {
+  public void setStatusCode(StatusCodes boo) {
     statusCode = boo;
   }
 
@@ -369,9 +379,9 @@ public class ActionResultPrim implements ActionResult, ToXml {
     @Override
     public void setStatus(Boolean boo) {
         if(boo==true){
-            setStatus(statusCode.TRUE);
+            setStatusCode(statusCode.TRUE);
         }else{
-            setStatus(statusCode.BIZ);
+            setStatusCode(statusCode.BIZ);
         }
     }
 }

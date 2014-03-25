@@ -36,8 +36,10 @@ public interface ActionResult extends ToXml, ToJson {
    *
    * @return результат выполнения действия - успешно или неуспешно
    */
-  public StatusCodes getStatus();
+  public Boolean getStatus();
 
+  public StatusCodes getStatusCode();
+  
   /**
    *
    * @return имя в приложении объекта, который выполнил действие
@@ -125,7 +127,9 @@ public interface ActionResult extends ToXml, ToJson {
    *
    * @param boo
    */
-  public void setStatus(StatusCodes boo);
+
+  
+  public void setStatusCode(StatusCodes boo);
   
     /**
    * установить результат выполнения действия - успешно или неуспешно

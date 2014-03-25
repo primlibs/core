@@ -271,10 +271,10 @@ public class Controller {
     } catch (Exception e) {
       actionResult = ActionResultPrim.getInstance();
       actionResult.addError(MyString.getStackExeption(e));
-      actionResult.setStatus(StatusCodes.CONTROLLER);
+      actionResult.setStatusCode(StatusCodes.CONTROLLER);
       throw new Exception("method  " + serviceMethod + " service " + serviceName + ": " + MyString.getStackExeption(e));
     }
-    return actionResult.getStatus();
+    return actionResult.getStatusCode();
   }
 
   /**

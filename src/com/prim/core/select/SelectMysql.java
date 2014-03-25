@@ -10,6 +10,7 @@ import com.prim.core.model.DinamicModel;
 import com.prim.core.model.ModelFactory;
 import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
+import com.prim.core.warehouse.DataTypes;
 import com.prim.support.MyString;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -249,7 +250,7 @@ class SelectMysql implements Select {
         } else {
             resultSelect += " ," + constant + " " + alias;
         }
-        Field fd = FieldFabric.getField(alias, alias, alias, false, false, "char", null, null, null, null);
+        Field fd = FieldFabric.getField(alias, alias, alias, false, false, DataTypes.CHAR, null, null, null, null);
         structure.put(alias, fd);
         return this;
     }

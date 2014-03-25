@@ -4,6 +4,7 @@
  */
 package com.prim.core.modelStructure;
 
+import com.prim.core.warehouse.DataTypes;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
@@ -17,12 +18,12 @@ import com.prim.support.primXml;
  */
 final public class FieldFabric {
 
-  public static Field getField(String name, String alias, String appName, Boolean mandatory, Boolean updatable, String type,
+  public static Field getField(String name, String alias, String appName, Boolean mandatory, Boolean updatable, DataTypes type,
           String relations, String def, List<ValidatorAbstract> validators, Boolean editable) throws CloneNotSupportedException {
     return FieldObject.valueOf(name, alias, appName, mandatory, updatable, type, relations, def, validators, editable);
   }
   
-  public static Field getField(String name, String alias, String appName, Boolean mandatory, Boolean updatable, String type) throws CloneNotSupportedException {
+  public static Field getField(String name, String alias, String appName, Boolean mandatory, Boolean updatable, DataTypes type) throws CloneNotSupportedException {
     return FieldObject.valueOf(name, alias, appName, mandatory, updatable, type, null, null, null, null);
   }
   
@@ -45,7 +46,16 @@ final public class FieldFabric {
       updatable = Boolean.parseBoolean(fieldElement.getElementsByTagName("updatable").item(0).getChildNodes().item(0).getNodeValue());
     }
 
+    DataTypes dataType = DataTypes.NONE;
     String type = fieldElement.getElementsByTagName("type").item(0).getChildNodes().item(0).getNodeValue();
+    if (type != null) {
+      for (DataTypes t: DataTypes.values()) {
+        if (type.equalsIgnoreCase(t.toString())) {
+          dataType = t;
+          break;
+        }
+      }
+    }
     String relations = null;
     if (fieldElement.getElementsByTagName("relations").item(0) != null
             && fieldElement.getElementsByTagName("relations").item(0).getChildNodes() != null
@@ -85,7 +95,7 @@ final public class FieldFabric {
 
     Boolean editable = Boolean.parseBoolean(fieldElement.getElementsByTagName("editable").item(0).getChildNodes().item(0).getNodeValue());
 
-    return getField(name, alias, appName, mandatory, updatable, type, relations, def, validators, editable);
+    return getField(name, alias, appName, mandatory, updatable, dataType, relations, def, validators, editable);
   }
 
   private FieldFabric() {

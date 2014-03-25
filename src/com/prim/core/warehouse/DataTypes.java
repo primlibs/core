@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public enum DataTypes {
   
-  INT, BOOL, CHAR, DATETIME, DECIMAL, TEXT, REF; 
+  NONE, INT, BOOL, CHAR, DATETIME, DECIMAL, TEXT, REF; 
   
  public static Map<String, Object> all() {
     Map<String, Object> map = new LinkedHashMap();
@@ -24,4 +24,17 @@ public enum DataTypes {
     return map;
   }
   
+  public static DataTypes getTypeByString(String name) {
+    DataTypes dataType = DataTypes.NONE;
+    if (name != null) {
+      for (DataTypes t: DataTypes.values()) {
+        if (name.equalsIgnoreCase(t.toString())) {
+          dataType = t;
+          break;
+        }
+      }
+    }
+    return dataType;
+  }
+ 
 }

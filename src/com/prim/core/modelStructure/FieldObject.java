@@ -1,5 +1,6 @@
 package com.prim.core.modelStructure;
 
+import com.prim.core.warehouse.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.io.Serializable;
 import java.util.*;
@@ -42,7 +43,7 @@ final class FieldObject implements Cloneable, Serializable, Field {
   /**
    * тип поля
    */
-  final private String type;
+  final private DataTypes type;
   /**
    * значение по умолчанию
    */
@@ -57,7 +58,7 @@ final class FieldObject implements Cloneable, Serializable, Field {
   final private List<ValidatorAbstract> validatorList;
   static final long serialVersionUID = 12345L;
 
-  private FieldObject(String name, String alias, String appName, Boolean mandatory, Boolean updatable, String type, String relations, String def, List<ValidatorAbstract> validators, Boolean editable) throws CloneNotSupportedException {
+  private FieldObject(String name, String alias, String appName, Boolean mandatory, Boolean updatable, DataTypes type, String relations, String def, List<ValidatorAbstract> validators, Boolean editable) throws CloneNotSupportedException {
     this.name = name;
     this.alias = alias;
     this.appName = appName;
@@ -80,7 +81,7 @@ final class FieldObject implements Cloneable, Serializable, Field {
     this.editable = editable;
   }
 
-  static FieldObject valueOf(String name, String alias, String appName, Boolean mandatory, Boolean updatable, String type, String relations, String def, List<ValidatorAbstract> validators, Boolean editable) throws CloneNotSupportedException {
+  static FieldObject valueOf(String name, String alias, String appName, Boolean mandatory, Boolean updatable, DataTypes type, String relations, String def, List<ValidatorAbstract> validators, Boolean editable) throws CloneNotSupportedException {
     return new FieldObject(name, alias, appName, mandatory, updatable, type, relations, def, validators, editable);
   }
 
@@ -120,7 +121,7 @@ final class FieldObject implements Cloneable, Serializable, Field {
   }
 
   @Override
-  public String getType() {
+  public DataTypes getType() {
     return type;
   }
 

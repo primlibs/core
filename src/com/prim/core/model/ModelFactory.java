@@ -9,6 +9,7 @@ import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
+import com.prim.core.warehouse.DataTypes;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -79,7 +80,7 @@ public class ModelFactory {
   public static DinamicModel copyModelWithNewFields(DinamicModel model, String ... fieldsNames) throws CloneNotSupportedException {
     Map<String, Field> fields = model.getStructure().getCloneFields();
     for (String fieldName: fieldsNames) {
-      fields.put(fieldName, FieldFabric.getField(fieldName, fieldName, "", false, false, ""));
+      fields.put(fieldName, FieldFabric.getField(fieldName, fieldName, "", false, false, DataTypes.CHAR));
     }
     return getDinamicModel(fields, model.getParams());
   }

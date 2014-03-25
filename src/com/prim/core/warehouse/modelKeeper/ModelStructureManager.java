@@ -11,6 +11,7 @@ import com.prim.core.modelStructure.Unique;
 import com.prim.core.modelStructure.UniqueObject;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
+import com.prim.core.warehouse.DataTypes;
 import com.prim.core.warehouse.WarehouseSingleton;
 import com.prim.support.MyString;
 import com.prim.support.filterValidator.entity.DateFormatValidator;
@@ -82,7 +83,7 @@ public class ModelStructureManager {
    * @throws Exception
    */
   public boolean addField(String fieldAlias, String appName, String mandatory, String updatable,
-          String type, String relations, String structureAlias, String def) throws Exception {
+          DataTypes type, String relations, String structureAlias, String def) throws Exception {
     boolean status = false;
     if (fieldAlias != null && !fieldAlias.equals("")
             && type != null && relations != null && structureAlias != null && !structureAlias.equals("")) {
@@ -762,7 +763,7 @@ public class ModelStructureManager {
   }
 
   // получить имя поля в таблице, для нового поля
-  private String getName(Structure struct, String type, boolean rel) throws CloneNotSupportedException {
+  private String getName(Structure struct, DataTypes type, boolean rel) throws CloneNotSupportedException {
     String fieldName = "";
     String intArray[] = {"int01", "int02", "int03", "int04", "int05", "int06", "int07", "int08", "int09", "int10"};
     String varcharArray[] = {"varchar1", "varchar2", "varchar3", "varchar4", "varchar5", "varchar6", "varchar7", "varchar8", "varchar9", "varchar10",
@@ -778,17 +779,17 @@ public class ModelStructureManager {
     List<String> textNames = Arrays.asList(textArray);
     List<String> refNames = Arrays.asList(refArray);
     // определить один общий массив для всех типов
-    Map<String, List<String>> map = new HashMap<String, List<String>>();
-    map.put("int", intNames);
-    map.put("bool", intNames);
-    map.put("char", varcharNames);
-    map.put("datetime", datetimeNames);
-    map.put("decimal", decimalNames);
-    map.put("text", textNames);
-    map.put("ref", refNames);
-    String newType = type;
-    if (type.equals("int") && rel == true) {
-      newType = "ref";
+    Map<DataTypes, List<String>> map = new HashMap<DataTypes, List<String>>();
+    map.put(DataTypes.INT, intNames);
+    map.put(DataTypes.BOOL, intNames);
+    map.put(DataTypes.CHAR, varcharNames);
+    map.put(DataTypes.DATETIME, datetimeNames);
+    map.put(DataTypes.DECIMAL, decimalNames);
+    map.put(DataTypes.TEXT, textNames);
+    map.put(DataTypes.REF, refNames);
+    DataTypes newType = type;
+    if (type.equals(DataTypes.INT) && rel == true) {
+      newType = DataTypes.REF;
     }
     // получить массив названий полей, соответствующий типу
     // если такой массив существует
@@ -839,14 +840,14 @@ public class ModelStructureManager {
    * @param type
    * @return
    */
-  private List<ValidatorAbstract> getValidators(String type) {
+  private List<ValidatorAbstract> getValidators(DataTypes type) {
     List<ValidatorAbstract> validators = new ArrayList();
-    if (type.equals("char")) {
+    if (type.equals(DataTypes.CHAR)) {
       StringLenghtValidator sv = new StringLenghtValidator();
       sv.setMin(1);
       sv.setMax(255);
       validators.add(sv);
-    } else if (type.equals("int")) {
+    } else if (type.equals(DataTypes.INT)) {
       DigitsFilter df = new DigitsFilter();
       DigitsValidator dv = new DigitsValidator();
       StringLenghtValidator sv = new StringLenghtValidator();
@@ -859,7 +860,7 @@ public class ModelStructureManager {
       validators.add(dv);
       validators.add(sv);
       validators.add(quantity);
-    } else if (type.equals("decimal")) {
+    } else if (type.equals(DataTypes.DECIMAL)) {
       DecimalFilter df = new DecimalFilter();
       DecimalValidator dv = new DecimalValidator();
       QuantityValidator quantity = new QuantityValidator();
@@ -868,14 +869,14 @@ public class ModelStructureManager {
       validators.add(df);
       validators.add(dv);
       validators.add(quantity);
-    } else if (type.equals("datetime")) {
+    } else if (type.equals(DataTypes.DATETIME)) {
       DateToFormatFilter filter = new DateToFormatFilter();
       filter.setFormat("yyyy-MM-dd HH:mm:ss");
       DateFormatValidator val = new DateFormatValidator();
       val.setFormat("yyyy-MM-dd HH:mm:ss");
       validators.add(filter);
       validators.add(val);
-    } else if (type.equals("bool")) {
+    } else if (type.equals(DataTypes.BOOL)) {
       DigitsFilter df = new DigitsFilter();
       DigitsValidator dv = new DigitsValidator();
       StringLenghtValidator sv = new StringLenghtValidator();
@@ -884,7 +885,7 @@ public class ModelStructureManager {
       validators.add(df);
       validators.add(dv);
       validators.add(sv);
-    } else if (type.equals("text")) {
+    } else if (type.equals(DataTypes.TEXT)) {
       StringLenghtValidator sv = new StringLenghtValidator();
       sv.setMin(1);
       sv.setMax(64000);

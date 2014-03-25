@@ -26,24 +26,41 @@ public class ControllerMethod implements Serializable, ToXml {
   private String description = "";
   private String name = "";
   private Boolean hidden = false;
+  private boolean free = false;
 
   public ControllerMethod() {
   }
 
-  ControllerMethod(String alias, String description, String name, Boolean hidden, List<ControllerService> serviceList) {
+  ControllerMethod(String alias, String description, String name, Boolean hidden, List<ControllerService> serviceList, boolean free) {
     this.alias = alias;
     this.description = description;
     this.hidden = hidden;
     this.serviceList = serviceList;
     this.name = name;
+    this.free = free;
   }
 
+  public boolean isFree() {
+    return free;
+  }
+
+  public void setFree(boolean free) {
+    this.free = free;
+  }
+
+  
+  
   public static ControllerMethod getFromXml(Element elem) {
 
     String alias = elem.getElementsByTagName("alias").item(0).getChildNodes().item(0).getNodeValue();
     String description = elem.getElementsByTagName("description").item(0).getChildNodes().item(0).getNodeValue();
     String name = primXml.getValue(elem, "name");
     Boolean hidden = Boolean.parseBoolean(elem.getElementsByTagName("hidden").item(0).getChildNodes().item(0).getNodeValue());
+    boolean free = false;
+    String freeString = primXml.getValue(elem, "free");
+    if (freeString != null & !freeString.isEmpty()) {
+      free = Boolean.parseBoolean(freeString);
+    }
 
     List<ControllerService> serviceList = new ArrayList();
     Element serviceListElement = (Element) elem.getElementsByTagName("serviceList").item(0);
@@ -53,7 +70,7 @@ public class ControllerMethod implements Serializable, ToXml {
       ControllerService cs = ControllerService.getFromXml(serviceElement);
       serviceList.add(cs);
     }
-    return new ControllerMethod(alias, description, name, hidden, serviceList);
+    return new ControllerMethod(alias, description, name, hidden, serviceList, free);
 
   }
 
@@ -131,6 +148,7 @@ public class ControllerMethod implements Serializable, ToXml {
     primXml.createElement(doc, controllerMethod, "description", description);
     primXml.createElement(doc, controllerMethod, "name", name);
     primXml.createElement(doc, controllerMethod, "hidden", hidden);
+    primXml.createElement(doc, controllerMethod, "free", free);
     Element sl = primXml.createEmptyElement(doc, controllerMethod, "serviceList");
     for (ControllerService cs : serviceList) {
       Element cer = primXml.createEmptyElement(doc, sl, "controllerService");

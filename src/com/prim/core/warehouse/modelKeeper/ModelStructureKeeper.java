@@ -9,6 +9,7 @@ import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
+import com.prim.core.warehouse.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.io.CharArrayWriter;
 import java.io.File;
@@ -470,7 +471,7 @@ public class ModelStructureKeeper {
             "Тип данных",
             false,
             false,
-            "int",
+            DataTypes.INT,
             "",
             id.toString(),
             getValidtorList(StringValidator, DigitsValidator, QuantityValidator),
@@ -483,7 +484,7 @@ public class ModelStructureKeeper {
             "ИД записи",
             true,
             false,
-            "int",
+            DataTypes.INT,
             "",
             null,
             getValidtorList(StringValidator, QuantityValidator),
@@ -496,7 +497,7 @@ public class ModelStructureKeeper {
             "Дата добавления",
             true,
             false,
-            "datetime",
+            DataTypes.DATETIME,
             "",
             null,
             getValidtorList(DateFilter, DateValidator),
@@ -510,7 +511,7 @@ public class ModelStructureKeeper {
             "Добавивший пользователь",
             true,
             false,
-            "int",
+            DataTypes.INT,
             "users",
             null,
             getValidtorList(StringValidator, DigitsValidator, QuantityValidator),
@@ -523,7 +524,7 @@ public class ModelStructureKeeper {
             "Дата обновления",
             false,
             true,
-            "datetime",
+            DataTypes.DATETIME,
             "",
             null,
             getValidtorList(DateFilter, DateValidator),
@@ -536,7 +537,7 @@ public class ModelStructureKeeper {
             "Обновивший пользователь",
             false,
             true,
-            "int",
+            DataTypes.INT,
             "users",
             null,
             getValidtorList(StringValidator, DigitsValidator, QuantityValidator),
@@ -549,7 +550,7 @@ public class ModelStructureKeeper {
             "Дата удаления",
             false,
             true,
-            "datetime",
+            DataTypes.DATETIME,
             "",
             null,
             getValidtorList(DateFilter, DateValidator),
@@ -562,7 +563,7 @@ public class ModelStructureKeeper {
             "Удаливший пользователь",
             false,
             true,
-            "int",
+            DataTypes.INT,
             "users",
             null,
             getValidtorList(StringValidator, DigitsValidator, QuantityValidator),
@@ -579,7 +580,7 @@ public class ModelStructureKeeper {
             "ID в другом хранилище данных",
             false,
             true,
-            "char",
+            DataTypes.CHAR,
             "",
             null,
             getValidtorList(StringValidatorForChar),

@@ -22,7 +22,7 @@ public class ServiceParameter implements Serializable, ToXml {
   private String name;
   private ControllerOrigin origin = ControllerOrigin.Request;
   private boolean mandatory;
-  private DataTypes dataType;
+  private DataTypes dataType = DataTypes.NONE;
   
 
   public ServiceParameter(String name) {
@@ -53,7 +53,7 @@ public class ServiceParameter implements Serializable, ToXml {
     if (mandatoryString != null && mandatoryString.trim().equals("true")) {
       mandatory = true;
     }
-    DataTypes dataType = null;
+    DataTypes dataType = DataTypes.NONE;
     String dataTypeString = primXml.getValue(elem, "dataType");
     if (dataTypeString != null) {
       for (DataTypes type: DataTypes.values()) {
