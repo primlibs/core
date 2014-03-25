@@ -164,7 +164,7 @@ final class FieldObject implements Cloneable, Serializable, Field {
     return fd;
   }
 
-  //@Override
+  @Override
   public void getSelfInXml(Document doc, Element field) throws Exception {
     primXml.createElement(doc, field, "name", name);
     primXml.createElement(doc, field, "alias", alias);
