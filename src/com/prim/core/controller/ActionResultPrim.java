@@ -94,18 +94,10 @@ public class ActionResultPrim implements ActionResult, ToXml {
    * @return результат выполнения действия - успешно или неуспешно
    */
   @Override
-  public Boolean getStatus() {
-    if (statusCode.equals(StatusCodes.TRUE)) {
-      return true;
-    } else {
-      return false;
-    }
+  public StatusCodes getStatus() {
+      return statusCode;
   }
   
-  @Override
-  public StatusCodes getStatusCode() {
-    return statusCode;
-  }
 
   /**
    *

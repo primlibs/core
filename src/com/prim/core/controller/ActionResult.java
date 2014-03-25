@@ -36,9 +36,7 @@ public interface ActionResult extends ToXml, ToJson {
    *
    * @return результат выполнения действия - успешно или неуспешно
    */
-  public Boolean getStatus();
-
-  public StatusCodes getStatusCode();
+  public StatusCodes getStatus();
   
   /**
    *

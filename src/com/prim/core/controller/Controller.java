@@ -274,7 +274,7 @@ public class Controller {
       actionResult.setStatusCode(StatusCodes.CONTROLLER);
       throw new Exception("method  " + serviceMethod + " service " + serviceName + ": " + MyString.getStackExeption(e));
     }
-    return actionResult.getStatusCode();
+    return actionResult.getStatus();
   }
 
   /**
