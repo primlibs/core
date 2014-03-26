@@ -59,16 +59,44 @@ public class ModelFactory {
     return new ModelObject(structure, app);
   }
 
-  public static DinamicModel getDinamicModel(Structure structure) {
-    return DinamicModelObject.getInstance(structure);
+  
+  public static ExpandedDinamicModel getExpendedDinamicModel(Structure structure) {
+    return ExpendedDinamicModelObject.getInstance(structure);
   }
 
-  public static DinamicModel getDinamicModel(Map<String, Field> structure, Map<String, Object> params) throws CloneNotSupportedException {
+  public static ExpandedDinamicModel getExpendedDinamicModel(Map<String, Field> structure, Map<String, Object> params) throws CloneNotSupportedException {
     Structure struct = StructureFabric.getStructure(null, null, null, null, false, false, structure, null);
-    DinamicModel dm = DinamicModelObject.getInstance(struct);
+    ExpandedDinamicModel dm = ExpendedDinamicModelObject.getInstance(struct);
     dm.set(params);
     return dm;
   }
+  
+  public static DinamicModel getDinamicModel(Structure structure) {
+    return DinamicModelObject.getInstance();
+  }
+
+  public static DinamicModel getDinamicModel(Map<String, Field> structure, Map<String, Object> params) throws CloneNotSupportedException {
+    DinamicModel dm = DinamicModelObject.getInstance();
+    dm.set(params);
+    return dm;
+  }
+  
+  public static DinamicModel getDinamicModel(Map<String, Object> params) throws CloneNotSupportedException {
+    DinamicModel dm = DinamicModelObject.getInstance();
+    dm.set(params);
+    return dm;
+  }
+  
+  
+  public static DinamicModel getDinamicModel(ExpandedDinamicModel expDm) throws CloneNotSupportedException {
+    DinamicModel dm = DinamicModelObject.getInstance();
+    dm.set(expDm.getParams());
+    dm.addError(expDm.getError());
+    dm.addFileArray(expDm.getFileArray());
+    dm.addInner(dm.getInnerDinamicModel());
+    return dm;
+  }
+  
   
   /**
    * возвращает копию переданной модели, к которой прибавлены новый поля
@@ -77,12 +105,17 @@ public class ModelFactory {
    * @return
    * @throws CloneNotSupportedException 
    */
+  /*
   public static DinamicModel copyModelWithNewFields(DinamicModel model, String ... fieldsNames) throws CloneNotSupportedException {
     Map<String, Field> fields = model.getStructure().getCloneFields();
     for (String fieldName: fieldsNames) {
       fields.put(fieldName, FieldFabric.getField(fieldName, fieldName, "", false, false, DataTypes.CHAR));
     }
     return getDinamicModel(fields, model.getParams());
+  }
+  */
+  public static DinamicModel copyModelWithNewFields(DinamicModel model, String ... fieldsNames) throws CloneNotSupportedException {
+    return getDinamicModel(model.getParams());
   }
   
 }

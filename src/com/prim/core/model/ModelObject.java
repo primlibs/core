@@ -40,7 +40,7 @@ final class ModelObject implements Model {
    * объект приложения
    */
   AbstractApplication app;
-  final DinamicModel dinamicModel;
+  final ExpandedDinamicModel expDinamicModel;
   private String parseQuery = "";
   private Map<String, Object> reqParams = new HashMap();
   /**
@@ -53,7 +53,7 @@ final class ModelObject implements Model {
    * @return реальное название первичного ключа
    */
   public String getPrimaryRealName() {
-    return dinamicModel.getStructure().getPrimaryRealName();
+    return expDinamicModel.getStructure().getPrimaryRealName();
   }
 
   @Override
@@ -66,22 +66,22 @@ final class ModelObject implements Model {
    * @param app - объект приложения
    */
   protected ModelObject(Structure structure, AbstractApplication app) throws CloneNotSupportedException {
-    dinamicModel = ModelFactory.getDinamicModel(structure);
+    expDinamicModel = ModelFactory.getExpendedDinamicModel(structure);
     this.app = app;
     setDef();
   }
 
   @Override
   public void set(String name, Object value) {
-    dinamicModel.set(name, value);
+    expDinamicModel.set(name, value);
     reqParams.put(name, value);
   }
 
   @Override
   public void set(Map<String, Object> params) {
     for (String name : params.keySet()) {
-      if (dinamicModel.getStructure().getField(name) != null) {
-        dinamicModel.set(name, params.get(name));
+      if (expDinamicModel.getStructure().getField(name) != null) {
+        expDinamicModel.set(name, params.get(name));
         reqParams.put(name, params.get(name));
       }
     }
@@ -93,7 +93,7 @@ final class ModelObject implements Model {
    * @return разрешена ли работа с файлами
    */
   public Boolean getFileWork() {
-    return dinamicModel.getStructure().isFileWork();
+    return expDinamicModel.getStructure().isFileWork();
   }
 
   @Override
@@ -119,7 +119,7 @@ final class ModelObject implements Model {
    * @return алиас первичного ключа
    */
   public String getPrimaryAlias() {
-    return dinamicModel.getStructure().getPrimaryAlias();
+    return expDinamicModel.getStructure().getPrimaryAlias();
   }
 
   /**
@@ -128,7 +128,7 @@ final class ModelObject implements Model {
    * @return
    */
   public Boolean isModelSystem() {
-    return dinamicModel.getStructure().isSystem();
+    return expDinamicModel.getStructure().isSystem();
   }
 
   /**
@@ -156,7 +156,7 @@ final class ModelObject implements Model {
       Select sel = tf.getSelect();
       sel.select(tb);
       sel.from(tb);
-      sel.and(tb.getPrimary().eq(dinamicModel.getStructure().getField(dinamicModel.getStructure().getPrimaryAlias()).getValue()));
+      sel.and(tb.getPrimary().eq(expDinamicModel.getStructure().getField(expDinamicModel.getStructure().getPrimaryAlias()).getValue()));
       if (onlyActive == true) {
         sel.and(tb.get("delete_date").isNull());
       }
@@ -166,21 +166,21 @@ final class ModelObject implements Model {
       if (list.size() > 0) {
         DinamicModel dm = list.get(0);
         if (!isModelSystem()) {
-          Object typeStructure = dinamicModel.getStructure().getField("user_data_type_id");
-          Object typeDm = dinamicModel.getStructure().getField("user_data_type_id");
+          Object typeStructure = expDinamicModel.getStructure().getField("user_data_type_id");
+          Object typeDm = expDinamicModel.getStructure().getField("user_data_type_id");
           if (typeStructure == null || typeDm == null || typeStructure.equals("") || !typeDm.equals(typeStructure)) {
-            dinamicModel.addError(app.ANOTHER_TYPE_ERROR);
+            expDinamicModel.addError(app.ANOTHER_TYPE_ERROR);
           }
         }
-        if (dinamicModel.getError().isEmpty()) {
-          dinamicModel.set(dm.getParams());
+        if (expDinamicModel.getError().isEmpty()) {
+          expDinamicModel.set(dm.getParams());
           result = true;
         }
       } else {
-        dinamicModel.addError(app.FIND_ERROR);
+        expDinamicModel.addError(app.FIND_ERROR);
       }
     } else {
-      dinamicModel.addError(app.PRIMARY_SEARCH_ERROR);
+      expDinamicModel.addError(app.PRIMARY_SEARCH_ERROR);
     }
     return result;
   }
@@ -212,20 +212,20 @@ final class ModelObject implements Model {
     Object primary = getPrimary();
     if (primary != null) {
       findByPrimary();
-      if (dinamicModel.getError().isEmpty()) {
+      if (expDinamicModel.getError().isEmpty()) {
         TableSelectFactory tf = new TableSelectFactory(app);
         Select sel=tf.getSelect();
-        String queryString = "delete from " + dinamicModel.getStructure().getTableName() + " where " + structure().getPrimaryRealName()
+        String queryString = "delete from " + expDinamicModel.getStructure().getTableName() + " where " + structure().getPrimaryRealName()
                 + "= " + sel.validateParameter(structure().getField(structure().getPrimaryAlias()).getValue().toString(), true);
         QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
         done = query.update();
         parseQuery = query.getQueryText();
         if (!done) {
-          dinamicModel.addError(query.getError());
+          expDinamicModel.addError(query.getError());
         }
       }
     } else {
-      dinamicModel.addError(app.DELETE_PRIMARY_ERROR);
+      expDinamicModel.addError(app.DELETE_PRIMARY_ERROR);
     }
     return done;
   }
@@ -256,7 +256,7 @@ final class ModelObject implements Model {
     if (!structure().isSystem() & structure().isFileWork() & getPrimary() != null) {
       QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), "select * from files where model_id = " + sel.validateParameter(structure().getField(structure().getPrimaryAlias()).getValue().toString(), true));
       query.select();
-      dinamicModel.addFileArray(query.getResultList());
+      expDinamicModel.addFileArray(query.getResultList());
     }
   }
 
@@ -272,7 +272,7 @@ final class ModelObject implements Model {
     if (content != null) {
       return saveFile(name, content.getBytes(), userId, date);
     } else {
-      dinamicModel.addError("content is null");
+      expDinamicModel.addError("content is null");
       return false;
     }
 
@@ -298,13 +298,13 @@ final class ModelObject implements Model {
           result = file.writeBytes(content);
           // если не удалось сохранить файл, то откатить транзакцию
           if (!result) {
-            dinamicModel.addError(app.FILE_SAVE_ERROR);
+            expDinamicModel.addError(app.FILE_SAVE_ERROR);
           }
         }
       }
       return result;
     } else {
-      dinamicModel.addError("Имя файла не определены");
+      expDinamicModel.addError("Имя файла не определены");
       return false;
     }
 
@@ -324,7 +324,7 @@ final class ModelObject implements Model {
     FileExecutor sourceFile = new FileExecutor(path);
     if (!sourceFile.exists()) {
       result = false;
-      dinamicModel.addError(app.FILE_COPY_ERROR);
+      expDinamicModel.addError(app.FILE_COPY_ERROR);
     }
     if (result == true) {
       // начать транзакцию
@@ -345,7 +345,7 @@ final class ModelObject implements Model {
           result = sourceFile.rename(id.toString());
         }
         if (result == false) {
-          dinamicModel.addError(app.FILE_SAVE_ERROR);
+          expDinamicModel.addError(app.FILE_SAVE_ERROR);
         }
       }
     }
@@ -417,7 +417,7 @@ final class ModelObject implements Model {
         ok = file.delete();
         // если не удалось удалить файл, то откатить транзакцию
         if (!ok) {
-          dinamicModel.addError(app.FILE_DELETE_ERROR);
+          expDinamicModel.addError(app.FILE_DELETE_ERROR);
         }
       }
     }
@@ -434,7 +434,7 @@ final class ModelObject implements Model {
     boolean ok = true;
     createFillesInfo();
     // пройти по массиву, удалить каждый файл по ИД
-    for (Map<String, Object> file : dinamicModel.getFileArray()) {
+    for (Map<String, Object> file : expDinamicModel.getFileArray()) {
       int id = Integer.parseInt(file.get("file_id").toString());
       ok = deleteFile(id);
       if (!ok) {
@@ -462,10 +462,10 @@ final class ModelObject implements Model {
         if (f.exists() && !f.isDirectory()) {
           return f;
         } else {
-          dinamicModel.addError(app.FILE_SEARCH_ERROR);
+          expDinamicModel.addError(app.FILE_SEARCH_ERROR);
         }
       } else {
-        dinamicModel.addError(app.PRIMARY_SEARCH_ERROR);
+        expDinamicModel.addError(app.PRIMARY_SEARCH_ERROR);
       }
     } catch (Exception ex) {
     }
@@ -482,13 +482,13 @@ final class ModelObject implements Model {
   public byte[] doZip() throws Exception {
     createFillesInfo();
     ZipArchive zip = new ZipArchive();
-    for (Map<String, Object> map : dinamicModel.getFileArray()) {
+    for (Map<String, Object> map : expDinamicModel.getFileArray()) {
       if (map.get("file_id") != null && map.get("rusname") != null) {
         zip.addFile(getFileDirectory() + "/" + map.get("file_id"), map.get("rusname").toString());
       }
     }
     byte[] bytes = zip.doZip();
-    dinamicModel.addError(zip.getErrors());
+    expDinamicModel.addError(zip.getErrors());
     return bytes;
   }
 
@@ -498,7 +498,7 @@ final class ModelObject implements Model {
    * @param ob
    */
   public void setPrimary(Object ob) {
-    dinamicModel.set(dinamicModel.getStructure().getPrimaryAlias(), ob);
+    expDinamicModel.set(expDinamicModel.getStructure().getPrimaryAlias(), ob);
   }
 
   /**
@@ -512,10 +512,10 @@ final class ModelObject implements Model {
     //наличие строки
     if (MyString.NotNull(name)) {
       //валидация
-      res = validateField(dinamicModel.getStructure().getField(name));
+      res = validateField(expDinamicModel.getStructure().getField(name));
 
     } else {
-      dinamicModel.addError("При валидаци поля не передано имя");
+      expDinamicModel.addError("При валидаци поля не передано имя");
     }
     return res;
   }
@@ -527,7 +527,7 @@ final class ModelObject implements Model {
    */
   public byte[] getFileContentByte(String fileId) {
     File fl = getFile(fileId);
-    if (fl != null && dinamicModel.getError().isEmpty()) {
+    if (fl != null && expDinamicModel.getError().isEmpty()) {
       FileExecutor fe = new FileExecutor(fl);
       return fe.readBytes();
     }
@@ -541,7 +541,7 @@ final class ModelObject implements Model {
    */
   public String getFileContentString(String fileId) {
     File fl = getFile(fileId);
-    if (fl != null && dinamicModel.getError().isEmpty()) {
+    if (fl != null && expDinamicModel.getError().isEmpty()) {
       FileExecutor fe = new FileExecutor(fl);
       return fe.readString();
     }
@@ -552,7 +552,7 @@ final class ModelObject implements Model {
    * устанавливает значения по умолчанию
    */
   private void setDef() throws CloneNotSupportedException {
-    for (Field fi : dinamicModel.getStructure().getCloneFields().values()) {
+    for (Field fi : expDinamicModel.getStructure().getCloneFields().values()) {
       if (fi.getDef() != null) {
         fi.setValue(fi.getDef());
       }
@@ -572,7 +572,7 @@ final class ModelObject implements Model {
     if (result == true) {
 
       // составить запрос
-      String queryString = "insert into " + dinamicModel.getStructure().getTableName() + " set";
+      String queryString = "insert into " + expDinamicModel.getStructure().getTableName() + " set";
       queryString = queryString + prepareSaveParams();
       // записать в базу данных, получить результат операции
       QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
@@ -580,16 +580,16 @@ final class ModelObject implements Model {
       parseQuery = query.getQueryText();
       // TODO записать QueryLog
       if (result == false) {
-        dinamicModel.addError(query.getError());
+        expDinamicModel.addError(query.getError());
       } else {
         try {
           QueryExecutor query2 = ExecutorFabric.getExecutor(app.getConnection(), "SELECT LAST_INSERT_ID() id");
           query2.select();
           parseQuery = query2.getQueryText();
           List<Map<String, Object>> resultSet = query2.getResultList();
-          dinamicModel.set(dinamicModel.getStructure().getPrimaryAlias(), resultSet.get(0).get("id"));
+          expDinamicModel.set(expDinamicModel.getStructure().getPrimaryAlias(), resultSet.get(0).get("id"));
         } catch (SQLException e) {
-          dinamicModel.addError(app.LAST_ID_ERROR + dinamicModel.getStructure().getTableAlias());
+          expDinamicModel.addError(app.LAST_ID_ERROR + expDinamicModel.getStructure().getTableAlias());
         }
       }
     }
@@ -607,8 +607,8 @@ final class ModelObject implements Model {
 
     ModelFactory mf = new ModelFactory(app);
 
-    Model model = mf.getModel(dinamicModel.getStructure().getTableAlias());
-    model.set(dinamicModel.getParams());
+    Model model = mf.getModel(expDinamicModel.getStructure().getTableAlias());
+    model.set(expDinamicModel.getParams());
 
     boolean result = model.findByPrimary();
     TableSelectFactory tf = new TableSelectFactory(app);
@@ -616,9 +616,9 @@ final class ModelObject implements Model {
     // если уже есть такая запись в БД
     if (result == true) {
       // устанавливаем значения для обновляемых параметров
-      Map<String, Object> searchResult = dinamicModel.getParams();
-      for (String fieldName : dinamicModel.getStructure().getCloneFields().keySet()) {
-        Field field = dinamicModel.getStructure().getField(fieldName);
+      Map<String, Object> searchResult = expDinamicModel.getParams();
+      for (String fieldName : expDinamicModel.getStructure().getCloneFields().keySet()) {
+        Field field = expDinamicModel.getStructure().getField(fieldName);
         if (field.isUpdatable() && reqParams.containsKey(fieldName)) {
           Object value = searchResult.get(fieldName);
           model.set(fieldName, value);
@@ -626,20 +626,20 @@ final class ModelObject implements Model {
       }
       result = model.validateAllFields(true, true);
       if (result == true) {
-        String queryString = "update " + dinamicModel.getStructure().getTableName() + " set "
-                + model.prepareSaveParams() + " where " + dinamicModel.getStructure().getPrimaryRealName() + "=" + sel.validateParameter(dinamicModel.getStructure().getField(dinamicModel.getStructure().getPrimaryAlias()).getValue().toString(), true);
+        String queryString = "update " + expDinamicModel.getStructure().getTableName() + " set "
+                + model.prepareSaveParams() + " where " + expDinamicModel.getStructure().getPrimaryRealName() + "=" + sel.validateParameter(expDinamicModel.getStructure().getField(expDinamicModel.getStructure().getPrimaryAlias()).getValue().toString(), true);
         QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
         result = query.update();
         parseQuery = query.getQueryText();
         if (result == false) {
-          dinamicModel.addError(query.getError());
+          expDinamicModel.addError(query.getError());
         }
       } else {
-        dinamicModel.addError(model.getError());
+        expDinamicModel.addError(model.getError());
       }
     } else {
-      dinamicModel.addError(app.UPDATE_ERROR);
-      dinamicModel.addError(model.getError());
+      expDinamicModel.addError(app.UPDATE_ERROR);
+      expDinamicModel.addError(model.getError());
     }
     return result;
   }
@@ -764,21 +764,21 @@ final class ModelObject implements Model {
           String lastError = errors.get(size-1);
           lastError = lastError += "; ";
           errors.set(size-1, lastError);
-          dinamicModel.addError("Параметр " + fieldAppName + ": ");
-          dinamicModel.addError(errors);
+          expDinamicModel.addError("Параметр " + fieldAppName + ": ");
+          expDinamicModel.addError(errors);
         }
       } else {
         // если значение обязательное
         if (field.isMandatory()) {
           isValid = false;
-          dinamicModel.addError(app.NESSESARY_PARAM_ERROR + fieldAppName);
+          expDinamicModel.addError(app.NESSESARY_PARAM_ERROR + fieldAppName);
         } else {
           isValid = true;
         }
       }
       return isValid;
     } else {
-      dinamicModel.addError("Model: переданное поле не существует");
+      expDinamicModel.addError("Model: переданное поле не существует");
       return false;
     }
   }
@@ -846,7 +846,7 @@ final class ModelObject implements Model {
         // исполнить запрос
         boolean ok = sel.executeSelect(app.getConnection());
         if (!ok) {
-          dinamicModel.addError(sel.getError());
+          expDinamicModel.addError(sel.getError());
           return false;
         } else {
           int count = 1;
@@ -863,7 +863,7 @@ final class ModelObject implements Model {
           }
           
           if (count > limit) {
-            dinamicModel.addError("найдена другая запись с таким же значением " + unique.getFieldNames());
+            expDinamicModel.addError("найдена другая запись с таким же значением " + unique.getFieldNames());
             return false;
           }
         }
@@ -882,12 +882,12 @@ final class ModelObject implements Model {
     boolean ok = true;
     if (structure().isSystem() | !structure().isFileWork()) {
       ok = false;
-      dinamicModel.addError(app.FILE_PERMISSION_ERROR);
+      expDinamicModel.addError(app.FILE_PERMISSION_ERROR);
     }
     String fileDir = getFileDirectory();
     if (fileDir == null) {
       ok = false;
-      dinamicModel.addError(app.FILE_PRIMARY_ERROR);
+      expDinamicModel.addError(app.FILE_PRIMARY_ERROR);
     }
     if (ok) {
       // если не существует директории - создать её.
@@ -896,7 +896,7 @@ final class ModelObject implements Model {
         ok = dir.mkdirs();
       }
       if (!ok) {
-        dinamicModel.addError(app.DIRECTORY_ERROR);
+        expDinamicModel.addError(app.DIRECTORY_ERROR);
       }
     }
     return ok;
@@ -924,14 +924,14 @@ final class ModelObject implements Model {
         if (done) {
           id = Integer.parseInt(filesModel.getPrimary().toString());
         } else {
-          dinamicModel.addError(app.FILE_SAVE_ERROR);
-          dinamicModel.addError(filesModel.getError());
+          expDinamicModel.addError(app.FILE_SAVE_ERROR);
+          expDinamicModel.addError(filesModel.getError());
         }
       } else {
-        dinamicModel.addError(app.FILE_PRIMARY_ERROR);
+        expDinamicModel.addError(app.FILE_PRIMARY_ERROR);
       }
     } else {
-      dinamicModel.addError("Добавивший пользователь или дата добавления не определены");
+      expDinamicModel.addError("Добавивший пользователь или дата добавления не определены");
     }
     return id;
   }
@@ -951,47 +951,47 @@ final class ModelObject implements Model {
               "delete from files where file_id = " + sel.validateParameter(id.toString(), true));
       done = query.update();
       if (!done) {
-        dinamicModel.addError(app.FILE_DATA_DELETE_ERROR);
-        dinamicModel.addError(query.getError());
+        expDinamicModel.addError(app.FILE_DATA_DELETE_ERROR);
+        expDinamicModel.addError(query.getError());
       }
     } else {
-      dinamicModel.addError(app.FILE_PERMISSION_ERROR);
+      expDinamicModel.addError(app.FILE_PERMISSION_ERROR);
     }
     return done;
   }
 
   private Structure structure() {
-    return dinamicModel.getStructure();
+    return expDinamicModel.getStructure();
   }
 
   @Override
   public List<String> getError() {
-    return dinamicModel.getError();
+    return expDinamicModel.getError();
   }
 
   @Override
   public List<Map<String, Object>> getFileArray() {
-    return dinamicModel.getFileArray();
+    return expDinamicModel.getFileArray();
   }
 
   @Override
   public Object get(String name) {
-    return dinamicModel.get(name);
+    return expDinamicModel.get(name);
   }
 
   @Override
   public Map<String, Object> getParams() throws CloneNotSupportedException {
-    return dinamicModel.getParams();
+    return expDinamicModel.getParams();
   }
 
   @Override
   public DinamicModel getDinamicModel() throws CloneNotSupportedException {
-    return dinamicModel.clone();
+    return ModelFactory.getDinamicModel(expDinamicModel);
   }
 
   @Override
   public Structure getStructure() throws CloneNotSupportedException {
-   return dinamicModel.getStructureClone();
+   return expDinamicModel.getStructureClone();
   }
   
   
