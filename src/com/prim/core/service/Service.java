@@ -188,7 +188,7 @@ public interface Service {
 
   public String getModelName();
 
-  public void model(DinamicModel dm);
+  public void model(Model dm) throws CloneNotSupportedException;
 
   /*
    * Установить параметр в ActionResult

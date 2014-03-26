@@ -3,6 +3,7 @@ package com.prim.core.controller;
 import com.google.gson.Gson;
 import com.prim.support.ToXml;
 import com.prim.core.model.DinamicModel;
+import com.prim.core.model.Model;
 import com.prim.core.select.Select;
 import java.util.*;
 import org.w3c.dom.Document;
@@ -72,9 +73,9 @@ public class ActionResultPrim implements ActionResult, ToXml {
    * устанавливает ошибки из ошибок модели, если есть ошибки модели, то
    * утсанавливает status == false
    */
-  public void model(DinamicModel model) {
+  public void model(Model model) throws CloneNotSupportedException {
     dinamicArrayList.clear();
-    dinamicArrayList.add(model);
+    dinamicArrayList.add(model.getDinamicModel());
     errors = model.getError();
     if (!errors.isEmpty()) {
       statusCode = StatusCodes.BIZ;

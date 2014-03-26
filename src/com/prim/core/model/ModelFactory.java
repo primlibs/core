@@ -91,7 +91,6 @@ public class ModelFactory {
   public static DinamicModel getDinamicModel(ExpandedDinamicModel expDm) throws CloneNotSupportedException {
     DinamicModel dm = DinamicModelObject.getInstance();
     dm.set(expDm.getParams());
-    dm.addError(expDm.getError());
     dm.addFileArray(expDm.getFileArray());
     dm.addInner(dm.getInnerDinamicModel());
     return dm;

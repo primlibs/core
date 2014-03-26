@@ -31,10 +31,7 @@ final class DinamicModelObject implements DinamicModel, Cloneable {
    * внутренний массив моделей
    */
   private List<DinamicModel> innerDinamicModel = new ArrayList<DinamicModel>();
-  /**
-   * массив ошибок моделей
-   */
-  private List<String> errors = new ArrayList();
+
   /**
    * структуа модели
    */
@@ -52,7 +49,6 @@ final class DinamicModelObject implements DinamicModel, Cloneable {
   @Override
   public DinamicModel clone() throws CloneNotSupportedException {
     DinamicModel dm = getInstance();
-    dm.addError(errors);
     dm.set(params);
     for (Map<String, Object> fileInfo : fileArray) {
       dm.addFileToArray(fileInfo);
@@ -63,29 +59,7 @@ final class DinamicModelObject implements DinamicModel, Cloneable {
     return dm;
   }
 
-  @Override
-  public List<String> getError() {
-    List<String> err = new ArrayList();
-    err.addAll(errors);
-    return err;
-  }
-
-  @Override
-  public void addError(String err) {
-    errors.add(err);
-  }
-
-  @Override
-  public void addError(String... err) {
-    for (String er : err) {
-      errors.add(er);
-    }
-  }
-
-  @Override
-  public void addError(List<String> err) {
-    errors.addAll(err);
-  }
+ 
 
   @Override
   public List<Map<String, Object>> getFileArray() {

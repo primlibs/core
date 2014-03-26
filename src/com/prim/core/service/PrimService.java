@@ -290,7 +290,7 @@ final class PrimService implements Service {
       if (status) {
         model.createFillesInfo();
       }
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
         actionResult.set(name, model.getParams().get(name));
@@ -316,7 +316,7 @@ final class PrimService implements Service {
       if (status) {
         model.createFillesInfo();
       }
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
         actionResult.set(name, model.getParams().get(name));
@@ -341,7 +341,7 @@ final class PrimService implements Service {
       model.set(request);
       boolean status = model.delete();
       clearBaseCashes();
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
         actionResult.set(name, model.getParams().get(name));
@@ -369,7 +369,7 @@ final class PrimService implements Service {
         actionResult.addError("Не обнаружен первичный ключ " + model.getPrimaryAlias());
       } else {
         status = model.save();
-        actionResult.model(model.getDinamicModel());
+        actionResult.model(model);
       }
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
@@ -401,7 +401,7 @@ final class PrimService implements Service {
           model.set("delete_date", FormatDate.getDateInMysql(operationDate));
         }
         status = model.save();
-        actionResult.model(model.getDinamicModel());
+        actionResult.model(model);
         // присвоить в actionResult все параметры модели
         for (String name : model.getParams().keySet()) {
           actionResult.set(name, model.get(name));
@@ -428,7 +428,7 @@ final class PrimService implements Service {
   public void setStructure() {
     try {
       Model model = modelFactory.getModel(modelName);
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
     } catch (Exception ex) {
       actionResult.addError(ex.toString() + " " + modelName + " setStructure()");
       actionResult.setStatusCode(StatusCodes.BIZ);
@@ -459,7 +459,7 @@ final class PrimService implements Service {
         actionResult.addError("Обнаружен первичный ключ " + model.getPrimaryAlias() + model.getPrimary());
       } else {
         status = model.save();
-        actionResult.model(model.getDinamicModel());
+        actionResult.model(model);
       }
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
@@ -513,7 +513,7 @@ final class PrimService implements Service {
       if (model.findByPrimary()) {
         status = model.deleteAllFiles();
       }
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
     } catch (Exception ex) {
       actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " deleteAllFiles()");
       actionResult.setStatusCode(StatusCodes.BIZ);
@@ -535,7 +535,7 @@ final class PrimService implements Service {
         fileId = Integer.parseInt(request.get("file_id").toString());
         status = model.deleteFile(fileId);
       }
-      actionResult.model(model.getDinamicModel());
+      actionResult.model(model);
       // присвоить в actionResult все параметры модели
       for (String name : model.getParams().keySet()) {
         actionResult.set(name, model.getParams().get(name));
@@ -574,7 +574,7 @@ final class PrimService implements Service {
         } else {
           actionResult.addError("Не найдена модель");
         }
-        actionResult.model(model.getDinamicModel());
+        actionResult.model(model);
         // присвоить в actionResult все параметры модели
         for (String name : model.getParams().keySet()) {
           actionResult.set(name, model.get(name));
@@ -775,7 +775,7 @@ final class PrimService implements Service {
   }
 
   @Override
-  public void model(DinamicModel dm) {
+  public void model(Model dm) throws CloneNotSupportedException {
     actionResult.model(dm);
   }
 

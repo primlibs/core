@@ -18,33 +18,6 @@ public interface DinamicModel extends ToXml {
 
   public DinamicModel clone() throws CloneNotSupportedException;
 
-  /**
-   * получить ошибки
-   *
-   * @return
-   */
-  public List<String> getError();
-
-  /**
-   * добавить сообщение к ошибкам
-   *
-   * @param err
-   */
-  void addError(String err);
-
-  /**
-   * добавить сообщение к ошибкам
-   *
-   * @param err
-   */
-  void addError(String... err);
-
-  /**
-   * добавить сообщения к ошибкам
-   *
-   * @param err
-   */
-  void addError(List<String> err);
 
   /**
    * получить информацию о файлах

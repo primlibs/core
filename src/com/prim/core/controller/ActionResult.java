@@ -7,6 +7,7 @@ package com.prim.core.controller;
 import com.prim.support.ToJson;
 import com.prim.support.ToXml;
 import com.prim.core.model.DinamicModel;
+import com.prim.core.model.Model;
 import com.prim.core.select.Select;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public interface ActionResult extends ToXml, ToJson {
    * устанавливает ошибки из ошибок модели, если есть ошибки модели, то
    * утсанавливает status == false
    */
-  public void model(DinamicModel model);
+  public void model(Model model) throws CloneNotSupportedException;
 
   /**
    *
