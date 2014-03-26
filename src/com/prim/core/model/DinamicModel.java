@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author User
  */
-public interface DinamicModel extends ToXml {
+public interface DinamicModel {
 
   public DinamicModel clone() throws CloneNotSupportedException;
 

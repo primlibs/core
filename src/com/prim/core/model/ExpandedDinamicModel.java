@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author User
  */
-public interface ExpandedDinamicModel extends ToXml{
+public interface ExpandedDinamicModel {
 
   
   public ExpandedDinamicModel clone() throws CloneNotSupportedException;

@@ -4,6 +4,8 @@
  */
 package com.prim.core.representation;
 
+import com.prim.core.controller.ActionResult;
+import com.prim.core.model.DinamicModel;
 import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
@@ -214,22 +216,21 @@ public class Xml {
 
     return UniqueObject.valueOf(names, checkDeleted);
   }
-  
-  
+
   public static void pairToXml(Document doc, Element pairElement, Pair pair) throws Exception {
     primXml.createElement(doc, pairElement, "object", pair.getObject());
     primXml.createElement(doc, pairElement, "action", pair.getAction());
     primXml.createElement(doc, pairElement, "def", pair.getDef());
-    Element seqMap=primXml.createEmptyElement(doc, pairElement, "sequenceMap");
+    Element seqMap = primXml.createEmptyElement(doc, pairElement, "sequenceMap");
     for (Sequence ss : pair.getSequenceClone().values()) {
-      Element seq=primXml.createEmptyElement(doc, seqMap, "sequense");
+      Element seq = primXml.createEmptyElement(doc, seqMap, "sequense");
       //ss.getSelfInXml(doc, seq);
       Xml.sequenceToXml(doc, seq, ss);
     }
 
-    Element paArr=primXml.createEmptyElement(doc, pairElement, "pairArray");
+    Element paArr = primXml.createEmptyElement(doc, pairElement, "pairArray");
     for (Pair pp : pair.getPairsClone()) {
-      Element pr=primXml.createEmptyElement(doc, paArr, "pair");
+      Element pr = primXml.createEmptyElement(doc, paArr, "pair");
       //pp.getSelfInXml(doc, pr);
       pairToXml(doc, pr, pp);
     }
@@ -272,13 +273,11 @@ public class Xml {
     return self;
 
   }
-  
-  
-  
+
   public static void sequenceToXml(Document doc, Element sequenseElement, Sequence seq) throws Exception {
-    
+
     primXml.createElement(doc, sequenseElement, "name", seq.getName());
-    
+
     if (seq.getAppObjectName() != null) {
       primXml.createElement(doc, sequenseElement, "appObjectName", seq.getAppObjectName());
     }
@@ -358,6 +357,53 @@ public class Xml {
 
     return SequenceObject.getInstance(name, appObjectName, appMethodName, trueRender, falseRender, trueRedirect, falseRedirect, trueRedirectParams, falseRedirectParams);
   }
-  
-  
+
+  public static void dinamicModelToXml(Document doc, Element rootElement, DinamicModel dm) throws Exception {
+
+    Element paramsElement = primXml.createEmptyElement(doc, rootElement, "params");
+    for (String name : dm.getParams().keySet()) {
+      Object value = dm.getParams().get(name);
+      Element parameterElement = primXml.createEmptyElement(doc, paramsElement, "parameter");
+      primXml.createElement(doc, parameterElement, "name", name);
+      primXml.createElement(doc, parameterElement, "value", value);
+    }
+
+    Element innerModelsElement = primXml.createEmptyElement(doc, rootElement, "innerParams");
+    for (DinamicModel innerDm : dm.getInnerDinamicModel()) {
+      Element modElement = primXml.createEmptyElement(doc, innerModelsElement, "model");
+      //model.getSelfInXml(doc, mod);
+      dinamicModelToXml(doc, modElement, innerDm);
+    }
+  }
+
+  public static void actionResultToXml(Document doc, Element root, ActionResult ar) throws Exception {
+    primXml.createElement(doc, root, "status", ar.getStatus());
+
+    Element er = primXml.createEmptyElement(doc, root, "errors");
+    for (String error : ar.getErrors()) {
+      primXml.createElement(doc, er, "error", error);
+    }
+    // сообщения
+    Element msg = primXml.createEmptyElement(doc, root, "messages");
+    for (String message : ar.getMessageList()) {
+      primXml.createElement(doc, msg, "message", message);
+    }
+
+    // параметры
+    Element selfParams = primXml.createEmptyElement(doc, root, "selfParams");
+    for (String key : ar.getParams().keySet()) {
+      Object parameter = ar.getParams().get(key);
+      Element paramet = primXml.createEmptyElement(doc, selfParams, "parameter");
+      primXml.createElement(doc, msg, "paramName", key);
+      primXml.createElement(doc, msg, "value", (parameter != null ? parameter.toString() : "null"));
+    }
+
+    // параметры DinamicModelList
+    Element innerParams = primXml.createEmptyElement(doc, root, "innerParams");
+    for (DinamicModel model : ar.getDinamicArrayList()) {
+      Element mod = primXml.createEmptyElement(doc, selfParams, "model");
+      //model.getSelfInXml(doc, mod);
+      Xml.dinamicModelToXml(doc, mod, model);
+    }
+  }
 }

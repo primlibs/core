@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.prim.support.ToXml;
 import com.prim.core.model.DinamicModel;
 import com.prim.core.model.Model;
+import com.prim.core.representation.Xml;
 import com.prim.core.select.Select;
 import java.util.*;
 import org.w3c.dom.Document;
@@ -359,7 +360,8 @@ public class ActionResultPrim implements ActionResult, ToXml {
     Element innerParams = primXml.createEmptyElement(doc, root, "innerParams");
     for (DinamicModel model : getDinamicArrayList()) {
       Element mod = primXml.createEmptyElement(doc, selfParams, "model");
-      model.getSelfInXml(doc, mod);
+      //model.getSelfInXml(doc, mod);
+      Xml.dinamicModelToXml(doc, mod, model);
     }
   }
 

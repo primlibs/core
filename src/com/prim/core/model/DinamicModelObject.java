@@ -146,10 +146,5 @@ final class DinamicModelObject implements DinamicModel, Cloneable {
     return obj;
   }
 
-  @Override
-  public void getSelfInXml(Document doc, Element root) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
   
 }

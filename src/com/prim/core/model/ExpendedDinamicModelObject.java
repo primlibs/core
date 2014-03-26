@@ -185,6 +185,7 @@ final class ExpendedDinamicModelObject implements ExpandedDinamicModel, Cloneabl
     return obj;
   }
 
+  /*
   @Override
   public void getSelfInXml(Document doc, Element root) throws Exception {
     Element er =  primXml.createEmptyElement(doc, root, "errors");
@@ -203,4 +204,5 @@ final class ExpendedDinamicModelObject implements ExpandedDinamicModel, Cloneabl
       model.getSelfInXml(doc, mod);
     }
   }
+  */
 }
