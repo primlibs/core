@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author User
  */
-public interface Structure  extends ToXml{
+public interface Structure {
   
   public static final String ELEMENT_NAME = "ModelStructure";
 
@@ -55,6 +55,8 @@ public interface Structure  extends ToXml{
    */
   public Boolean isFileWork();
 
+  public Map<String, Field> getFields();
+  
   /**
    *
    * @return клон массива полей

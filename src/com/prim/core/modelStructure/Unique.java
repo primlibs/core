@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author User
  */
-public interface Unique extends ToXml{
+public interface Unique {
 
   public List<String> getFieldNames();
 

@@ -4,6 +4,7 @@
  */
 package com.prim.core.modelStructure;
 
+import com.prim.core.representation.Xml;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ final public class StructureFabric {
   private StructureFabric() {
   }
 
+  /*
   public static Structure getStructureFromXml(Element structureElement) throws CloneNotSupportedException, Exception {
 
     String tableName = structureElement.getElementsByTagName("tableName").item(0).getChildNodes().item(0).getNodeValue();
@@ -39,7 +41,8 @@ final public class StructureFabric {
     Map<String, Field> fields = new HashMap();
     for (int i = 0; i < fieldNodeList.getLength(); i++) {
       Element fieldElement = (Element) fieldNodeList.item(i);
-      Field field = FieldFabric.getFieldFromXml(fieldElement);
+      //Field field = FieldFabric.getFieldFromXml(fieldElement);
+      Field field = Xml.fieldFromXml(fieldElement);
       fields.put(field.getAlias(), field);
     }
     
@@ -60,4 +63,5 @@ final public class StructureFabric {
 
     return getStructure(tableName, name, alias, primary, system, fileWork, fields, uniqueList);
   }
+  */
 }

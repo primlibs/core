@@ -6,6 +6,7 @@ package com.prim.core.model;
 
 import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.Structure;
+import com.prim.core.representation.Xml;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -192,8 +193,9 @@ final class DinamicModelObject implements DinamicModel, Cloneable {
     }
     // параметры
     Element struct = primXml.createEmptyElement(doc, root,"structure");
-    structure.getSelfInXml(doc, struct);
-
+    //structure.getSelfInXml(doc, struct);
+    Xml.structureToXml(doc, struct, structure);
+ 
 
     Element innerParams = primXml.createEmptyElement(doc, root, "innerParams");
     for (DinamicModel model : getInnerDinamicModel()) {

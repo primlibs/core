@@ -27,7 +27,7 @@ final public class FieldFabric {
     return FieldObject.valueOf(name, alias, appName, mandatory, updatable, type, null, null, null, null);
   }
   
-
+/*
   public static Field getFieldFromXml(Element fieldElement) throws CloneNotSupportedException, Exception {
 
     String name = fieldElement.getElementsByTagName("name").item(0).getChildNodes().item(0).getNodeValue();
@@ -97,7 +97,7 @@ final public class FieldFabric {
 
     return getField(name, alias, appName, mandatory, updatable, dataType, relations, def, validators, editable);
   }
-
+*/
   private FieldFabric() {
   }
 }

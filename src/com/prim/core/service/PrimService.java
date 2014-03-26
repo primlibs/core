@@ -407,9 +407,9 @@ final class PrimService implements Service {
           actionResult.set(name, model.get(name));
         }
       }
-      if(status==true){
+      if (status == true) {
         actionResult.setStatusCode(StatusCodes.TRUE);
-      }else{
+      } else {
         actionResult.setStatusCode(StatusCodes.BIZ);
       }
       clearBaseCashes();
@@ -753,7 +753,11 @@ final class PrimService implements Service {
 
   @Override
   public void setStatus(Boolean sts) {
-    actionResult.setStatusCode(StatusCodes.BIZ);
+    if (sts) {
+      actionResult.setStatusCode(StatusCodes.TRUE);
+    } else {
+      actionResult.setStatusCode(StatusCodes.BIZ);
+    }
   }
 
   @Override
@@ -883,23 +887,22 @@ final class PrimService implements Service {
   public void setFileList(List<UploadedFile> fileList) {
     this.fileList = fileList;
   }
-  
-/*
-  public void executeSelect(Select select) throws Exception {
-    boolean ok = select.executeSelect(getConnection());
-    if (!ok) {
-      throw new Exception(select.getError().toString());
-    }
-  }
 
-  public void saveModel(Model model) throws Exception {
-    boolean ok = model.save();
-    if (!ok) {
-      throw new Exception(model.getError().toString());
-    }
-  }
-*/
-  
+  /*
+   public void executeSelect(Select select) throws Exception {
+   boolean ok = select.executeSelect(getConnection());
+   if (!ok) {
+   throw new Exception(select.getError().toString());
+   }
+   }
+
+   public void saveModel(Model model) throws Exception {
+   boolean ok = model.save();
+   if (!ok) {
+   throw new Exception(model.getError().toString());
+   }
+   }
+   */
   @Override
   public void executeSelect(Select select) throws Exception {
     boolean ok = select.executeSelect(getConnection());
@@ -909,7 +912,7 @@ final class PrimService implements Service {
       throw new Exception();
     }
   }
-  
+
   @Override
   public void saveModel(Model model) throws Exception {
     boolean ok = model.save();

@@ -14,7 +14,7 @@ import com.prim.support.filterValidator.entity.ValidatorAbstract;
  *
  * @author User
  */
-public interface Field extends ToXml{
+public interface Field {
   /**
    * редактируемое ли поле то есть можно ли редактировать параметры поля через интерфейс админа
    */

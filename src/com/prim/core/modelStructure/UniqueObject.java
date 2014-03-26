@@ -53,6 +53,7 @@ final public class UniqueObject implements Serializable, Cloneable, Unique {
     return new UniqueObject(fieldNames, checkDeleted);
   }
 
+  /*
   public static Unique getUniqueFromXml(Element uniqueElement) throws CloneNotSupportedException, Exception {
 
     Boolean checkDeleted = Boolean.parseBoolean(uniqueElement.getElementsByTagName("checkDeleted").item(0).getChildNodes().item(0).getNodeValue());
@@ -67,6 +68,7 @@ final public class UniqueObject implements Serializable, Cloneable, Unique {
 
     return valueOf(names, checkDeleted);
   }
+  */
 
   /**
    *
@@ -130,6 +132,7 @@ final public class UniqueObject implements Serializable, Cloneable, Unique {
     }
   }
 
+  /*
   @Override
    public void getSelfInXml(Document doc, Element unique) throws Exception {
     primXml.createElement(doc, unique, "checkDeleted", checkDeleted); 
@@ -137,4 +140,5 @@ final public class UniqueObject implements Serializable, Cloneable, Unique {
       primXml.createElement(doc, unique, "name", name); 
     }
   }
+  */
 }

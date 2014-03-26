@@ -7,6 +7,7 @@ package com.prim.core.warehouse.pair;
 import com.prim.core.AbstractApplication;
 import com.prim.core.pair.Pair;
 import com.prim.core.pair.PairObject;
+import com.prim.core.representation.Xml;
 import com.prim.support.MyString;
 import com.prim.support.primXml;
 import java.io.File;
@@ -131,7 +132,8 @@ public class PairKeeper {
       Element root = doc.createElement("root");
       doc.appendChild(root);
       Element pr = primXml.createEmptyElement(doc, root, "pair");
-      pair.getSelfInXml(doc, pr);
+      //pair.getSelfInXml(doc, pr);
+      Xml.pairToXml(doc, pr, pair); 
 
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
@@ -218,7 +220,8 @@ public class PairKeeper {
       NodeList list = doc.getChildNodes();
       Element root = (Element) list.item(0);
       Element pairElement = (Element) root.getElementsByTagName("pair").item(0);
-      pair = PairObject.getPairFromXml(pairElement);
+      //pair = PairObject.getPairFromXml(pairElement);
+      pair = Xml.pairFromXml(pairElement);
 
     } catch (Exception e) {
       errors.add(MyString.getStackExeption(e));

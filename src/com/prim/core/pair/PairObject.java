@@ -351,6 +351,7 @@ public final class PairObject implements Pair {
     return getInstance(object, action, def, sequence, pairArray, parent);
   }
 
+  /*
   @Override
   public void getSelfInXml(Document doc, Element pair) throws Exception {
     primXml.createElement(doc, pair, "object", object);
@@ -404,6 +405,7 @@ public final class PairObject implements Pair {
     return self;
 
   }
+  */
 
   @Override
   public void setSequence(Sequence cs) {

@@ -111,6 +111,7 @@ final public class SequenceObject implements Sequence {
     return (falseRedirectParams != null ? falseRedirectParams : "");
   }
 
+  /*
   @Override
   public void getSelfInXml(Document doc, Element sequense) throws Exception {
     
@@ -141,12 +142,14 @@ final public class SequenceObject implements Sequence {
       primXml.createElement(doc, sequense, "falseRedirectParams", falseRedirectParams);
     }
   }
+  */
 
   @Override
   public Sequence clone() {
     return getInstance(name, appObjectName, appMethodName, trueRender, falseRender, trueRedirect, falseRedirect, trueRedirectParams, falseRedirectParams);
   }
 
+  /*
   public static Sequence getSequenseFromXml(Element elem) throws CloneNotSupportedException, Exception {
     String name = elem.getElementsByTagName("name").item(0).getChildNodes().item(0).getNodeValue();
 
@@ -200,4 +203,5 @@ final public class SequenceObject implements Sequence {
 
     return getInstance(name, appObjectName, appMethodName, trueRender, falseRender, trueRedirect, falseRedirect, trueRedirectParams, falseRedirectParams);
   }
+  */
 }

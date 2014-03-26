@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author кот
  */
-public interface Pair extends ToXml, Cloneable {
+public interface Pair extends Cloneable {
 
   public Sequence getSequence(String name);
 

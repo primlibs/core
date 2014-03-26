@@ -11,7 +11,7 @@ import com.prim.support.ToXml;
  *
  * @author кот
  */
-public interface Sequence extends ToXml, Cloneable {
+public interface Sequence extends Cloneable {
   public String getName();
   
   public String getTrueRender();

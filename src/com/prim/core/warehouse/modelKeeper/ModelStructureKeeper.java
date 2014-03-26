@@ -7,6 +7,7 @@ import com.prim.core.modelStructure.Field;
 import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
+import com.prim.core.representation.Xml;
 import com.prim.core.select.Select;
 import com.prim.core.select.TableSelectFactory;
 import com.prim.support.enums.DataTypes;
@@ -177,7 +178,8 @@ public class ModelStructureKeeper {
           Document doc = db.newDocument();
           Element root = doc.createElement("root");
           doc.appendChild(root);
-          struct.getSelfInXml(doc, root);
+          //struct.getSelfInXml(doc, root);
+          Xml.structureToXml(doc, root, struct);
 
           TransformerFactory transformerFactory = TransformerFactory.newInstance();
           Transformer transformer = transformerFactory.newTransformer();
@@ -255,7 +257,8 @@ public class ModelStructureKeeper {
           Document doc = db.newDocument();
           Element root = doc.createElement("root");
           doc.appendChild(root);
-          struct.getSelfInXml(doc, root);
+          //struct.getSelfInXml(doc, root);
+          Xml.structureToXml(doc, root, struct);
 
           TransformerFactory transformerFactory = TransformerFactory.newInstance();
           Transformer transformer = transformerFactory.newTransformer();
@@ -319,7 +322,8 @@ public class ModelStructureKeeper {
           Document doc = db.newDocument();
           Element root = doc.createElement("root");
           doc.appendChild(root);
-          struct.getSelfInXml(doc, root);
+          //struct.getSelfInXml(doc, root);
+          Xml.structureToXml(doc, root, struct);
 
           TransformerFactory transformerFactory = TransformerFactory.newInstance();
           Transformer transformer = transformerFactory.newTransformer();
@@ -391,7 +395,8 @@ public class ModelStructureKeeper {
         NodeList list = doc.getChildNodes();
 
         Element structureElement = (Element) list.item(0);
-        Structure structure = StructureFabric.getStructureFromXml(structureElement);
+        //Structure structure = StructureFabric.getStructureFromXml(structureElement);
+        Structure structure = Xml.structureFromXml(structureElement);
         int id = rs.getInt("user_data_type_id");
 
         Map<String, Field> fields = structure.getCloneFields();
@@ -427,7 +432,8 @@ public class ModelStructureKeeper {
     NodeList models = root.getElementsByTagName("structure");
     for (int i = 0; i < models.getLength(); i++) {
       Element modelNode = (Element) models.item(i);
-      Structure str = StructureFabric.getStructureFromXml(modelNode);
+      //Structure str = StructureFabric.getStructureFromXml(modelNode);
+      Structure str = Xml.structureFromXml(modelNode);
       structMap.put(str.getName(), str);
 
     }

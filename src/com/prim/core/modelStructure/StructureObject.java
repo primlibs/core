@@ -1,5 +1,6 @@
 package com.prim.core.modelStructure;
 
+import com.prim.core.representation.Xml;
 import java.io.Serializable;
 import java.util.*;
 import org.w3c.dom.Document;
@@ -235,6 +236,7 @@ final class StructureObject implements Serializable, Structure, Cloneable {
     }
   }
 
+  /*
   @Override
   public void getSelfInXml(Document doc, Element root) throws Exception {
     primXml.createElement(doc, root, "tableName", tableName);
@@ -247,7 +249,8 @@ final class StructureObject implements Serializable, Structure, Cloneable {
     Element fiel = primXml.createEmptyElement(doc, root, "fields");
     for (Field fd : fields.values()) {
       Element fdd =primXml.createEmptyElement(doc, fiel, "field");
-      fd.getSelfInXml(doc, fdd);
+      //fd.getSelfInXml(doc, fdd);
+      Xml.fieldToXml(doc, fdd, fd);
     }
     Element ul =primXml.createEmptyElement(doc, root, "uniqueList"); 
     for (Unique un : uniqueList) {
@@ -255,4 +258,5 @@ final class StructureObject implements Serializable, Structure, Cloneable {
       un.getSelfInXml(doc, unn);
     }
   }
+  */
 }
