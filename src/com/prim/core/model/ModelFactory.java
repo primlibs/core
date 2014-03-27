@@ -71,14 +71,30 @@ public class ModelFactory {
     return dm;
   }
   
-  public static DinamicModel getDinamicModel(Structure structure) {
-    return DinamicModelObject.getInstance();
+  @Deprecated
+  public static DinamicModel getDinamicModel(Structure structure) throws CloneNotSupportedException {
+    DinamicModel dm = DinamicModelObject.getInstance();
+    Map<String,Field> map = structure.getCloneFields();
+    for (String fieldName: map.keySet()) {
+       Object value = map.get(fieldName).getValue();
+       dm.set(fieldName, value);
+    }
+    return dm;
   }
 
+  @Deprecated
   public static DinamicModel getDinamicModel(Map<String, Field> structure, Map<String, Object> params) throws CloneNotSupportedException {
     DinamicModel dm = DinamicModelObject.getInstance();
+    for (String fieldName: structure.keySet()) {
+       Object value = structure.get(fieldName).getValue();
+       dm.set(fieldName, value);
+    }
     dm.set(params);
     return dm;
+  }
+  
+  public static DinamicModel getDinamicModel() {
+    return DinamicModelObject.getInstance();
   }
   
   public static DinamicModel getDinamicModel(Map<String, Object> params) throws CloneNotSupportedException {

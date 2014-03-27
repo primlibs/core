@@ -16,7 +16,7 @@ public enum StatusCodes {
   
   TRUE(0, "Успешно"), AUTH(1, "Ошибка авторизации"),
   RIGHT(2, "Нет прав"),OBJECT(3, "Нет объекта"),ACTION(4, "Нет метода"),
-  CONTROLLER(5, "Ошибка контроллера"),APPLICATION(5, "Ошибка приложения"),BIZ(9,"Ошибка бизнес логики");
+  CONTROLLER(5, "Ошибка контроллера"),APPLICATION(6, "Ошибка приложения"),BIZ(9,"Ошибка бизнес логики");
   
   final private Integer id;
   

@@ -129,7 +129,10 @@ public class Controller {
     }
     if (!rightsObject.methodInRight(objectName, methodName)) {
       String msg="";
-      throw new Exception("Недостаточно прав для выполнения: " + objectName + " " + methodName + " для пользователя " + rightsObject.getUserId());
+      actionResult.setStatusCode(StatusCodes.RIGHT);
+      actionResult.addError("Недостаточно прав для выполнения: " + objectName + " " + methodName + " для пользователя " + rightsObject.getUserId());
+      return StatusCodes.RIGHT;
+      //throw new Exception("Недостаточно прав для выполнения: " + objectName + " " + methodName + " для пользователя " + rightsObject.getUserId());
     }
     StatusCodes result = StatusCodes.BIZ;
     connection.setAutoCommit(false);
