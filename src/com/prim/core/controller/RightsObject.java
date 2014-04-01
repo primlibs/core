@@ -71,6 +71,14 @@ public class RightsObject{
     return userId;
   }
 
+  public List<String> getRightListClone() {
+    List<String> newRightsList = new ArrayList();
+    for (String right: rightList) {
+      newRightsList.add(right);
+    }
+    return newRightsList;
+  }
+
   /**
    * получить логин
    * @return 
@@ -92,4 +100,6 @@ public class RightsObject{
     }
     return false;
   }
+  
+ 
 }
