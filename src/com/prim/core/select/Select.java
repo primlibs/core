@@ -150,6 +150,8 @@ public interface Select {
    */
   public Select leftJoin(Parameter first, Parameter second) throws CloneNotSupportedException;
 
+  public Select leftJoinDefaultIndex(Parameter first, Parameter second) throws CloneNotSupportedException;
+  
   /**
    * добавить соединение таблиц типа LEFT JOIN
    *

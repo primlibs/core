@@ -355,6 +355,28 @@ class SelectMysql implements Select {
     return this;
   }
 
+  @Override
+  public SelectMysql leftJoinDefaultIndex(Parameter first, Parameter second) throws CloneNotSupportedException {
+    if (from == false) {
+      tables.put(first.getTable().getModelTbAlias(), first.getTable());
+      allSelectTables.add(first.getTable());
+      //tables.put(second.getTable().getModelTbAlias(), second.getTable());
+      resultSelect += " from " + first.getTable().getRealName() + " " + first.getTable().getModelTbAlias();
+      resultSelect += " LEFT JOIN " + second.getTable().getRealName() + " " + second.getTable().getModelTbAlias();
+      resultSelect += " ON " + second.getTable().getModelTbAlias() + "." + second.getRealName() + " "
+              + " =" + first.getTable().getModelTbAlias() + "." + first.getRealName() + " ";
+      resultSelect += getDefaultCondition(second.getTable());
+      from = true;
+    } else {
+      //tables.put(second.getTable().getModelTbAlias(), second.getTable());
+      resultSelect += " LEFT JOIN " + second.getTable().getRealName() + " " + second.getTable().getModelTbAlias();
+      resultSelect += " ON " + second.getTable().getModelTbAlias() + "." + second.getRealName() + " "
+              + " =" + first.getTable().getModelTbAlias() + "." + first.getRealName() + " ";
+      resultSelect += getDefaultCondition(second.getTable());
+    }
+    return this;
+  }
+  
   /**
    * добавить соединение таблиц типа LEFT JOIN
    *
