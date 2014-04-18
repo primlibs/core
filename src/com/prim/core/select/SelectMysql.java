@@ -682,6 +682,23 @@ class SelectMysql implements Select {
     }
     return this;
   }
+  
+  @Override
+  public SelectMysql group(String str) throws CloneNotSupportedException {
+    if (and == false) {
+      resultSelect += " WHERE 1=1 ";
+      resultSelect += getDefaultCondition();
+      and = true;
+    }
+    if (group == false) {
+      resultSelect += " GROUP BY ";
+      resultSelect += " " + str + " ";
+      group = true;
+    } else {
+      resultSelect += " ," + str + " ";;
+    }
+    return this;
+  }
 
   /**
    * добавить параметр в блок GROUP BY, применить к этому параметру функцию

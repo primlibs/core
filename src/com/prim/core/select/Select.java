@@ -150,6 +150,13 @@ public interface Select {
    */
   public Select leftJoin(Parameter first, Parameter second) throws CloneNotSupportedException;
 
+  /**
+   * добавить соединение таблиц типа LEFT JOIN, не указывая индексов, которые будут использоваться
+   * @param first параметр из первой таблицы, учавствующей в соединении
+   * @param second параметр из второй таблицы, учавствующей в соединении
+   * @return
+   * @throws CloneNotSupportedException 
+   */
   public Select leftJoinDefaultIndex(Parameter first, Parameter second) throws CloneNotSupportedException;
   
   /**
@@ -285,6 +292,13 @@ public interface Select {
    * @param param параметр
    */
   public Select group(Parameter param) throws CloneNotSupportedException;
+  
+  /**
+   * добавить параметр в блок GROUP BY
+   *
+   * @param param параметр
+   */
+  public Select group(String str) throws CloneNotSupportedException;
 
   /**
    * добавить параметр в блок GROUP BY, применить к этому параметру функцию
