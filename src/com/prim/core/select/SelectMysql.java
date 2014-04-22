@@ -543,6 +543,7 @@ class SelectMysql implements Select {
     if (and == false && checkWhere) {
       resultSelect += " WHERE 1=1 ";
       resultSelect += getDefaultCondition();
+      and = true;
     }
     resultSelect += " and ( ";
     for (Condition cnd : cond) {
