@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author кот
  */
-public interface ActionResult extends ToXml, ToJson {
+public interface ActionResult extends ToXml{
 
   /**
    * установить модель <br/> <br/>

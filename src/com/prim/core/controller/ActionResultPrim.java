@@ -1,6 +1,5 @@
 package com.prim.core.controller;
 
-import com.google.gson.Gson;
 import com.prim.support.ToXml;
 import com.prim.core.model.DinamicModel;
 import com.prim.core.model.Model;
@@ -365,12 +364,6 @@ public class ActionResultPrim implements ActionResult, ToXml {
     }
   }
 
-  @Override
-  public String getSelfInJson() throws Exception {
-    Gson gson = new Gson();
-    return gson.toJson(this);
-  }
-
     @Override
     public void setStatus(Boolean boo) {
         if(boo==true){
@@ -379,4 +372,5 @@ public class ActionResultPrim implements ActionResult, ToXml {
             setStatusCode(statusCode.BIZ);
         }
     }
+
 }

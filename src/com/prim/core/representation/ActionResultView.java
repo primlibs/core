@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.prim.core.controller.ActionResult;
 import com.prim.core.controller.StatusCodes;
 import com.prim.core.model.DinamicModel;
+import com.prim.support.MyString;
 import com.prim.support.ToJson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,8 +111,12 @@ import java.util.Map;
     
   @Override
   public String getSelfInJson() {
-    Gson gson = new Gson();
-    return gson.toJson(this);
+      try{
+        Gson gs = new Gson();
+        return gs.toJson(this);
+      }catch(Exception e){
+          return MyString.getStackExeption(e);
+      }
   }
   
 }
