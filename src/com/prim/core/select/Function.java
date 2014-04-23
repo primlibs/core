@@ -10,6 +10,6 @@ package com.prim.core.select;
  */
 public enum Function {
   
-  DATE,
+  DATE, MONTH, YEAR
   
 }
