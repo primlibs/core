@@ -215,6 +215,11 @@ public interface Select {
   public Select on(Condition cond) throws CloneNotSupportedException;
 
   /**
+   * добавить условие в блок ON. Применяется после блока left join
+   */
+   public Select on(String cond) throws CloneNotSupportedException;
+  
+  /**
    * добавить несколько условий через OR. <br/><br/> к блоку where добавляется:
    * AND ( условие 1 OR условие 2 OR ... )
    *

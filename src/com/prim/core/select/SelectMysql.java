@@ -465,6 +465,11 @@ class SelectMysql implements Select {
   public Select on(Condition cond) throws CloneNotSupportedException {
     return and(cond, false);
   }
+  
+  @Override
+  public Select on(String cond) throws CloneNotSupportedException {
+    return and(cond, false);
+  }
 
   @Override
   public Select and(String cond) throws CloneNotSupportedException {
