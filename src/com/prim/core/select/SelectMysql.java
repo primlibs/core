@@ -417,6 +417,12 @@ class SelectMysql implements Select {
     resultSelect += getDefaultCondition(table);
     return this;
   }
+  
+  @Override
+  public Select leftJoin(String str) throws CloneNotSupportedException {
+    resultSelect += " LEFT JOIN " + str + " "; 
+    return this;
+  }
 
   /**
    * добавить условие and в блок where
@@ -968,7 +974,7 @@ class SelectMysql implements Select {
   private String getDefaultCondition(Table table) throws CloneNotSupportedException {
     String result = " ";
     for (Field fs : table.getStructure().values()) {
-      if (fs.getDef() != null) {
+      if (fs.getDef() != null && fs.isUpdatable() == false) {
         Condition cnd = ConditionMysql.getInstance(table.get(fs.getAlias()), CondType.equals, fs.getDef());
         result += " and " + getOrAnd(cnd) + " ";
       }

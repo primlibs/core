@@ -150,6 +150,8 @@ public interface Select {
    */
   public Select leftJoin(Parameter first, Parameter second) throws CloneNotSupportedException;
 
+  public Select leftJoin(String str) throws CloneNotSupportedException;
+  
   /**
    * добавить соединение таблиц типа LEFT JOIN, не указывая индексов, которые будут использоваться
    * @param first параметр из первой таблицы, учавствующей в соединении
