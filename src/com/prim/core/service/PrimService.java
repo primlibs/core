@@ -590,6 +590,7 @@ final class PrimService implements Service {
   /**
    * получить файлы
    */
+  @Override
   public void getFile() {
     try {
       boolean status = false;
@@ -599,6 +600,8 @@ final class PrimService implements Service {
         fileId = Integer.parseInt(request.get("file_id").toString());
         if (fileId != null) {
           File f = model.getFile(fileId.toString());
+          byte[] bytes = model.getFileContentByte(fileId.toString());
+          actionResult.set("fileContent", bytes);
           if (f != null) {
             actionResult.set("filePath", f.getAbsolutePath());
             Model fm = modelFactory.getModel("files");
