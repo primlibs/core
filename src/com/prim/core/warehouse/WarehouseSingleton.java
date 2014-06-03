@@ -39,6 +39,11 @@ public class WarehouseSingleton {
     warehouse.put(name, new Keeper(app.getOptionSingletonPath()));
     return warehouse.get(name);
   }
+  
+  synchronized public Keeper getNewKeeper(String name, String optionSingletonPath) throws Exception {
+    warehouse.put(name, new Keeper(optionSingletonPath));
+    return warehouse.get(name);
+  }
  
   
 }
