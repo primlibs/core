@@ -24,6 +24,14 @@ public class DataAccess {
     private DataAccess() {
     }
 
+    /**
+     * получить из базы данных модели с заданными параметрами
+     * @param app
+     * @param modelName название сущности
+     * @param params параметры и их значения
+     * @return
+     * @throws Exception 
+     */
     public static List<Model> getModelsByParams(AbstractApplication app, String modelName, Map<String, Object> params) throws Exception {
         if (params.isEmpty()) {
             return new ArrayList();
@@ -49,6 +57,7 @@ public class DataAccess {
         }
     }
 
+    
     static public List<DinamicModel> searchByParams(AbstractApplication app, Table table, Parameter sort, OrdTypes ty, Integer limitFrom, Integer limit, Condition... cnd) throws Exception {
         List<Condition> cnds = Arrays.asList(cnd);
         return searchByParams(app, table, sort, ty, limitFrom, limit, cnds);
