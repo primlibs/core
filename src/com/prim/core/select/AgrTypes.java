@@ -14,5 +14,6 @@ public enum AgrTypes {
   MIN,
   SUM,
   AVG,
-  COUNT
+  COUNT,
+  GROUP_CONCAT
 }
