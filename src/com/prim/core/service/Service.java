@@ -236,4 +236,10 @@ public interface Service {
   public void executeSelect(Select select) throws Exception;
 
   public void saveModel(Model model) throws Exception;
+  
+  public DAOInterface getDao () throws Exception;
+  
+  
+  
+  
 }

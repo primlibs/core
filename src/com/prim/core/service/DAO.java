@@ -2,14 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prim.core.dao;
+package com.prim.core.service;
 
 import com.prim.core.AbstractApplication;
 import com.prim.core.model.Model;
 import com.prim.core.select.Select;
 import com.prim.core.select.Table;
 import com.prim.core.select.TableSelectFactory;
-import com.prim.support.FormatDate;
 import java.sql.Connection;
 
 /**
@@ -18,21 +17,25 @@ import java.sql.Connection;
  *
  * @author Pavel Rice
  */
-public class DAO {
+class DAO implements DAOInterface{
 
-  protected AbstractApplication app;
+  private AbstractApplication app;
 
-  public DAO(AbstractApplication app) {
+  private DAO(AbstractApplication app) {
     this.app = app;
   }
 
+  static DAO getInstance(AbstractApplication app){
+    return new DAO(app);
+  }
+  
   /**
    *
    * @param name название сущности из БД
    * @return объект Table для запроса
    * @throws Exception
    */
-  protected Table getTable(String name) throws Exception {
+   public Table getTable(String name) throws Exception {
     return TableSelectFactory.getTable(app, name);
   }
 
@@ -43,7 +46,7 @@ public class DAO {
    * @return объект Table для запроса
    * @throws Exception
    */
-  protected Table getTable(String name, String alias) throws Exception {
+  public Table getTable(String name, String alias) throws Exception {
     return TableSelectFactory.getTable(app, name, alias);
   }
 
@@ -52,7 +55,7 @@ public class DAO {
    * @return объект запроса Select
    * @throws Exception
    */
-  protected Select getSelect() throws Exception {
+  public Select getSelect() throws Exception {
     return TableSelectFactory.getSelect(app);
   }
 
@@ -60,7 +63,7 @@ public class DAO {
    *
    * @return объект соединения с БД
    */
-  protected Connection getConnection() {
+  public Connection getConnection() {
     return app.getConnection();
   }
 
@@ -77,18 +80,10 @@ public class DAO {
     }
   }
 
-  
-
-  /**
-   * сохранить модель. Если при сохранении произошла ошибка - метод бросает Exception
-   *
-   * @param model
-   * @throws Exception
-   */
-  public void saveModel(Model model) throws Exception {
-    boolean ok = model.save();
-    if (!ok) {
-      throw new Exception(model.getError().toString());
-    }
+  @Override
+  public AbstractApplication getApp() {
+    return app;
   }
+
+  
 }

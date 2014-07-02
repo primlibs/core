@@ -56,6 +56,8 @@ final class PrimService implements Service {
    * объект приложения
    */
   private final AbstractApplication app;
+  
+  private final DAOInterface dao;
   /**
    * объект прав
    */
@@ -95,6 +97,7 @@ final class PrimService implements Service {
   private PrimService(String modelName, AbstractApplication app, Integer authorizedUserId, Date operationDate) throws Exception {
     this.modelName = modelName;
     this.app = app;
+    this.dao=DAO.getInstance(app);
     modelFactory = new ModelFactory(app);
     this.rightsObject = app.getRightsObject();
     if (authorizedUserId != null) {
@@ -929,5 +932,10 @@ final class PrimService implements Service {
   @Override
   public List<UploadedFile> getFileList() {
     return fileList;
+  }
+
+  @Override
+  public DAOInterface getDao() throws Exception {
+    return dao;
   }
 }
