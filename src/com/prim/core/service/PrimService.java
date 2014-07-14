@@ -370,6 +370,7 @@ final class PrimService implements Service {
       if (model.getPrimary() == null || "".equals(model.getPrimary())) {
         status = false;
         actionResult.addError("Не обнаружен первичный ключ " + model.getPrimaryAlias());
+        actionResult.setStatus(false);
       } else {
         status = model.save();
         actionResult.model(model);
