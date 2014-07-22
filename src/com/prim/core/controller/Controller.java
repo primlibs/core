@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * класс выполняет команду, которая поступила в приложение
  *
@@ -42,7 +41,7 @@ public class Controller {
    */
   private ActionResult actionResult = ActionResultPrim.getInstance();
   /**
-   * массив с данными запроса 
+   * массив с данными запроса
    */
   private Map<String, Object> request = new HashMap<String, Object>();
   /**
@@ -53,9 +52,9 @@ public class Controller {
    * массив для хранения данных внутри контроллера
    */
   private Map<String, Object> innerParams = new HashMap<String, Object>();
-  
+
   private List<UploadedFile> fileList = new ArrayList();
-  
+
   /**
    * запущено ли в тестовом режиме
    */
@@ -90,14 +89,15 @@ public class Controller {
 
   /**
    * установить Application
+   *
    * @param app
-   * @throws Exception 
+   * @throws Exception
    */
-  final public void setApplication(AbstractApplication app) throws Exception{
-    if(app!=null){
-      this.app=app;
-      this.rightsObject=app.getRightsObject();
-    }else{
+  final public void setApplication(AbstractApplication app) throws Exception {
+    if (app != null) {
+      this.app = app;
+      this.rightsObject = app.getRightsObject();
+    } else {
       throw new Exception("Application is null on controller");
     }
   }
@@ -105,18 +105,18 @@ public class Controller {
   public void setFileList(List<UploadedFile> fileList) {
     this.fileList = fileList;
   }
-  
+
   /**
    * получить информацию
-   * @return 
+   *
+   * @return
    */
   public String getInfo() {
     return info;
   }
 
   /**
-   * выполняет всю работу класса - вызывает сервисы(объекты бизнес-логики),
-   * получает от них параметры
+   * выполняет всю работу класса - вызывает сервисы(объекты бизнес-логики), получает от них параметры
    *
    * @return
    * @throws Exception
@@ -128,7 +128,7 @@ public class Controller {
       throw new Exception("Controller: method is null");
     }
     if (!rightsObject.methodInRight(objectName, methodName)) {
-      String msg="";
+      String msg = "";
       actionResult.setStatusCode(StatusCodes.RIGHT);
       actionResult.addError("Недостаточно прав для выполнения: " + objectName + " " + methodName + " для пользователя " + rightsObject.getUserId());
       return StatusCodes.RIGHT;
@@ -142,18 +142,38 @@ public class Controller {
         break;
       }
     }
-    if (result.equals(StatusCodes.TRUE) && test == false) {
-      connection.commit();
+
+    if (test == true) {
+      if (result.equals(StatusCodes.TRUE)) {
+
+      } else {
+        connection.rollback();
+      }
     } else {
-      connection.rollback();
+      if (result.equals(StatusCodes.TRUE)) {
+        connection.commit();
+        connection.setAutoCommit(true);
+      } else {
+        connection.rollback();
+        connection.setAutoCommit(true);
+      }
     }
-    connection.setAutoCommit(true);
+
+    /*
+     if (result.equals(StatusCodes.TRUE) && test == false) {
+     connection.commit();
+     } else {
+     connection.rollback();
+     }
+     connection.setAutoCommit(true);
+     */
     return result;
   }
 
   /**
    * установить Connection
-   * @param cnt 
+   *
+   * @param cnt
    */
   public void setConnection(Connection cnt) {
     connection = cnt;
@@ -170,7 +190,8 @@ public class Controller {
 
   /**
    * получить объект прав
-   * @return 
+   *
+   * @return
    */
   public RightsObject getRightsObject() {
     return rightsObject;
@@ -178,7 +199,8 @@ public class Controller {
 
   /**
    * установить объект прав
-   * @param rightsObject 
+   *
+   * @param rightsObject
    */
   public void setRightsObject(RightsObject rightsObject) {
     this.rightsObject = rightsObject;
@@ -186,7 +208,8 @@ public class Controller {
 
   /**
    * установить Id авторизованного пользователя
-   * @param AuthorizedUserId 
+   *
+   * @param AuthorizedUserId
    */
   public void setAuthorizedUserId(Integer AuthorizedUserId) {
     this.authorizedUserId = AuthorizedUserId;
@@ -282,7 +305,8 @@ public class Controller {
 
   /**
    * установить массив внутренних параметров
-   * @param innerParams 
+   *
+   * @param innerParams
    */
   public void setInnerParams(Map<String, Object> innerParams) {
     this.innerParams = innerParams;
@@ -290,7 +314,8 @@ public class Controller {
 
   /**
    * получить массив внутренних параметров
-   * @return 
+   *
+   * @return
    */
   public Map<String, Object> getInnerParams() {
     return innerParams;
