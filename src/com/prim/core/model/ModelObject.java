@@ -27,10 +27,8 @@ import java.util.Map;
 import com.prim.support.filterValidator.ChainValidator;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 
-
 /**
- * класс реализует патерн ActiveRecord, т.е. объект этого класса представляет
- * собой запись из таблицы БД
+ * класс реализует патерн ActiveRecord, т.е. объект этого класса представляет собой запись из таблицы БД
  *
  * @author User1
  */
@@ -60,7 +58,7 @@ final class ModelObject implements Model {
   public String getLastQueryText() {
     return parseQuery;
   }
-  
+
   /**
    * @param structure - объект структуры
    * @param app - объект приложения
@@ -85,7 +83,7 @@ final class ModelObject implements Model {
         reqParams.put(name, params.get(name));
       }
     }
-    
+
   }
 
   /**
@@ -101,8 +99,6 @@ final class ModelObject implements Model {
     return lastFileId;
   }
 
-  
-  
   /**
    * возвращает значение первичного ключа
    *
@@ -186,8 +182,7 @@ final class ModelObject implements Model {
   }
 
   /**
-   * сохранение записи. то есть, добавление в таблицу новой записи, либо
-   * обновление существующей.
+   * сохранение записи. то есть, добавление в таблицу новой записи, либо обновление существующей.
    *
    * @return
    */
@@ -202,6 +197,94 @@ final class ModelObject implements Model {
     return done;
   }
 
+  @Override
+  public boolean saveNoValidate() throws Exception {
+    boolean done = false;
+    Object primary = getPrimary();
+    if (primary == null) {
+      done = insertNoValidate();
+    } else {
+      done = updateNoValidate();
+    }
+    return done;
+  }
+
+  /**
+   * добавить новую запись в таблицу
+   *
+   * @return - успешно ли добавилась запись в БД
+   */
+  private boolean insertNoValidate() throws Exception {
+    setParamsBeforeInsert();
+
+    // составить запрос
+    String queryString = "insert into " + expDinamicModel.getStructure().getTableName() + " set";
+    queryString = queryString + prepareSaveParams();
+    // записать в базу данных, получить результат операции
+    QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
+    boolean result = query.update();
+    parseQuery = query.getQueryText();
+    // TODO записать QueryLog
+    if (result == false) {
+      expDinamicModel.addError(query.getError());
+    } else {
+      try {
+        QueryExecutor query2 = ExecutorFabric.getExecutor(app.getConnection(), "SELECT LAST_INSERT_ID() id");
+        query2.select();
+        parseQuery = query2.getQueryText();
+        List<Map<String, Object>> resultSet = query2.getResultList();
+        expDinamicModel.set(expDinamicModel.getStructure().getPrimaryAlias(), resultSet.get(0).get("id"));
+      } catch (SQLException e) {
+        expDinamicModel.addError(app.LAST_ID_ERROR + expDinamicModel.getStructure().getTableAlias());
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * обновить запись в БД
+   *
+   * @return - успешно ли обновилась запись
+   */
+  private boolean updateNoValidate() throws Exception {
+
+    setParamsBeforeUpdate();
+
+    ModelFactory mf = new ModelFactory(app);
+
+    Model model = mf.getModel(expDinamicModel.getStructure().getTableAlias());
+    model.set(expDinamicModel.getParams());
+
+    boolean result = model.findByPrimary();
+    TableSelectFactory tf = new TableSelectFactory(app);
+    Select sel = tf.getSelect();
+    // если уже есть такая запись в БД
+    if (result == true) {
+      // устанавливаем значения для обновляемых параметров
+      Map<String, Object> searchResult = expDinamicModel.getParams();
+      for (String fieldName : expDinamicModel.getStructure().getCloneFields().keySet()) {
+        Field field = expDinamicModel.getStructure().getField(fieldName);
+        if (field.isUpdatable() && reqParams.containsKey(fieldName)) {
+          Object value = searchResult.get(fieldName);
+          model.set(fieldName, value);
+        }
+      }
+      String queryString = "update " + expDinamicModel.getStructure().getTableName() + " set "
+              + model.prepareSaveParams() + " where " + expDinamicModel.getStructure().getPrimaryRealName() + "=" + sel.validateParameter(expDinamicModel.getStructure().getField(expDinamicModel.getStructure().getPrimaryAlias()).getValue().toString(), true);
+      QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
+      result = query.update();
+      parseQuery = query.getQueryText();
+      if (result == false) {
+        expDinamicModel.addError(query.getError());
+      }
+    } else {
+      expDinamicModel.addError(app.UPDATE_ERROR);
+      expDinamicModel.addError(model.getError());
+    }
+    return result;
+  }
+
   /**
    * удаление записи
    *
@@ -214,7 +297,7 @@ final class ModelObject implements Model {
       findByPrimary();
       if (expDinamicModel.getError().isEmpty()) {
         TableSelectFactory tf = new TableSelectFactory(app);
-        Select sel=tf.getSelect();
+        Select sel = tf.getSelect();
         String queryString = "delete from " + expDinamicModel.getStructure().getTableName() + " where " + structure().getPrimaryRealName()
                 + "= " + sel.validateParameter(structure().getField(structure().getPrimaryAlias()).getValue().toString(), true);
         QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), queryString);
@@ -252,7 +335,7 @@ final class ModelObject implements Model {
    */
   public void createFillesInfo() throws Exception {
     TableSelectFactory tf = new TableSelectFactory(app);
-    Select sel=tf.getSelect();
+    Select sel = tf.getSelect();
     if (!structure().isSystem() & structure().isFileWork() & getPrimary() != null) {
       QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(), "select * from files where model_id = " + sel.validateParameter(structure().getField(structure().getPrimaryAlias()).getValue().toString(), true));
       query.select();
@@ -308,12 +391,10 @@ final class ModelObject implements Model {
       return false;
     }
 
-
   }
 
   /**
-   * сохранить новый файл, который является копией файла, расположенного по
-   * указанному пути
+   * сохранить новый файл, который является копией файла, расположенного по указанному пути
    *
    * @param path - полный путь к файлу
    * @return - удалось ли сохранение
@@ -471,7 +552,6 @@ final class ModelObject implements Model {
     }
     return null;
   }
- 
 
   /**
    * получить все файлы модели в архиве zip
@@ -533,7 +613,7 @@ final class ModelObject implements Model {
     }
     return null;
   }
-  
+
   /**
    * отдает файл в виде строки
    *
@@ -602,7 +682,7 @@ final class ModelObject implements Model {
    * @return - успешно ли обновилась запись
    */
   private boolean update() throws Exception {
-    
+
     setParamsBeforeUpdate();
 
     ModelFactory mf = new ModelFactory(app);
@@ -612,7 +692,7 @@ final class ModelObject implements Model {
 
     boolean result = model.findByPrimary();
     TableSelectFactory tf = new TableSelectFactory(app);
-    Select sel=tf.getSelect();
+    Select sel = tf.getSelect();
     // если уже есть такая запись в БД
     if (result == true) {
       // устанавливаем значения для обновляемых параметров
@@ -667,7 +747,7 @@ final class ModelObject implements Model {
     int i = 0;
     Map<String, Field> fieldsMap = structure().getCloneFields();
     TableSelectFactory tf = new TableSelectFactory(app);
-    Select sel=tf.getSelect();
+    Select sel = tf.getSelect();
     for (String alias : fieldsMap.keySet()) {
       Field field = fieldsMap.get(alias);
       String fieldName = field.getName();
@@ -744,8 +824,8 @@ final class ModelObject implements Model {
     if (field != null) {
       boolean isValid;
       // создать цепочку валидаторов
-      for (ValidatorAbstract validator: field.getValidatorList()) {
-         validator.setTerminate(true);
+      for (ValidatorAbstract validator : field.getValidatorList()) {
+        validator.setTerminate(true);
       }
       ChainValidator chain = new ChainValidator(field.getValidatorList());
       // получить значение параметра, которое соответствует имени поля
@@ -761,9 +841,9 @@ final class ModelObject implements Model {
         if (!isValid) {
           List<String> errors = chain.getErrors();
           int size = errors.size();
-          String lastError = errors.get(size-1);
+          String lastError = errors.get(size - 1);
           lastError = lastError += "; ";
-          errors.set(size-1, lastError);
+          errors.set(size - 1, lastError);
           expDinamicModel.addError("Параметр " + fieldAppName + ": ");
           expDinamicModel.addError(errors);
         }
@@ -854,14 +934,14 @@ final class ModelObject implements Model {
             count = Integer.parseInt(sel.getDinamicList().get(0).get("count").toString());
           } catch (Exception e) {
           }
-          
+
           int limit;
           if (update) {
             limit = 1;
           } else {
             limit = 0;
           }
-          
+
           if (count > limit) {
             expDinamicModel.addError("найдена другая запись с таким же значением " + unique.getFieldNames());
             return false;
@@ -873,8 +953,8 @@ final class ModelObject implements Model {
   }
 
   /**
-   * проверяет, разрешена ли работа с файлами для данной модели. Также создает
-   * директорию для файлов модели, если директория ещё не существует.
+   * проверяет, разрешена ли работа с файлами для данной модели. Также создает директорию для файлов модели, если директория ещё не
+   * существует.
    *
    * @return
    */
@@ -906,8 +986,7 @@ final class ModelObject implements Model {
    * добавляет запись о файле в БД
    *
    * @param rusName - пользовательское имя файла
-   * @return - в случае успешного добавление ИД новой записи, в случае неудачи
-   * -1
+   * @return - в случае успешного добавление ИД новой записи, в случае неудачи -1
    */
   private int addFileToTable(String rusName, Integer userId, Date date) throws Exception {
     int id = -1;
@@ -946,7 +1025,7 @@ final class ModelObject implements Model {
     boolean done = false;
     if (getPrimary() != null) {
       TableSelectFactory tf = new TableSelectFactory(app);
-      Select sel=tf.getSelect();
+      Select sel = tf.getSelect();
       QueryExecutor query = ExecutorFabric.getExecutor(app.getConnection(),
               "delete from files where file_id = " + sel.validateParameter(id.toString(), true));
       done = query.update();
@@ -991,8 +1070,7 @@ final class ModelObject implements Model {
 
   @Override
   public Structure getStructure() throws CloneNotSupportedException {
-   return expDinamicModel.getStructureClone();
+    return expDinamicModel.getStructureClone();
   }
-  
-  
+
 }

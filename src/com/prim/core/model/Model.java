@@ -26,6 +26,13 @@ public interface Model {
   public Boolean save() throws Exception;
   
   /**
+   * сохрание без валидации
+   * @return
+   * @throws Exception 
+   */
+  public boolean saveNoValidate() throws Exception;
+  
+  /**
    * возвращает текст последнего sql-запроса
    * @return 
    */
