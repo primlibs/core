@@ -197,17 +197,7 @@ final class ModelObject implements Model {
     return done;
   }
 
-  @Override
-  public boolean saveNoValidate() throws Exception {
-    boolean done = false;
-    Object primary = getPrimary();
-    if (primary == null) {
-      done = insertNoValidate();
-    } else {
-      done = updateNoValidate();
-    }
-    return done;
-  }
+ 
 
   /**
    * добавить новую запись в таблицу
