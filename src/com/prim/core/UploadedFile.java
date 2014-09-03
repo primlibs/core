@@ -6,7 +6,7 @@ import java.io.File;
  * 
  * файл, загруженный в приложение
  * 
- * @author Rice Pavel
+ * @author Pavel Rice 
  */
 public class UploadedFile {
 

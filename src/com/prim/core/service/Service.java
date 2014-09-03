@@ -233,8 +233,10 @@ public interface Service {
 
   public boolean copyFile(Model model, String fileId) throws Exception;
 
+  @Deprecated
   public void executeSelect(Select select) throws Exception;
 
+  @Deprecated
   public void saveModel(Model model) throws Exception;
   
   public DAOInterface getDao () throws Exception;
