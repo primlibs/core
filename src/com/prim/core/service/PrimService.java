@@ -939,4 +939,80 @@ final class PrimService implements Service {
   public DAOInterface getDao() throws Exception {
     return dao;
   }
+
+  @Override
+  public boolean find(Model model, boolean onlyActive) throws Exception {
+    boolean ok = model.findByPrimary(onlyActive);
+    if (!ok) {
+      setStatus(false);
+      addError(model.getError());
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean find(Model model) throws Exception {
+    boolean ok = model.findByPrimary();
+    if (!ok) {
+      setStatus(false);
+      addError(model.getError());
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean save(Model model) throws Exception {
+    boolean ok = model.save();
+    if (!ok) {
+      setStatus(false);
+      addError(model.getError());
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean execute(Select sel) throws Exception {
+    boolean ok = sel.executeSelect(getConnection());
+    if (!ok) {
+      setStatus(false);
+      addError(sel.getError());
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean checkAr(ActionResult ar) throws Exception {
+    boolean ok = ar.getStatus().equals(StatusCodes.TRUE);
+    if (!ok) {
+      getActionResult().setStatusCode(ar.getStatus());
+      addError(ar.getErrors());
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean checkParams(Object[] params, String errorMessage) {
+    boolean ok = true;
+    for (Object param : params) {
+      if (MyString.isNull(param)) {
+        ok = false;
+        break;
+      }
+    }
+    if (!ok) {
+      addError(errorMessage);
+      setStatus(false);
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean checkParam(Object param, String errorMessage) {
+    boolean ok = MyString.NotNull(param);
+    if (!ok) {
+      setStatus(false);
+      addError(errorMessage);
+    }
+    return ok;
+  }
 }

@@ -39,12 +39,11 @@ public interface Service {
   public void setRequest(Map<String, Object> request);
 
   public void setFileId(int fileId);
-  
+
   public List<UploadedFile> getFileList();
 
   /**
-   * получить объект ActionResult, который представляет собой результат
-   * выполнения сервиса
+   * получить объект ActionResult, который представляет собой результат выполнения сервиса
    *
    * @return
    */
@@ -141,9 +140,8 @@ public interface Service {
   public void registerException(Exception exc);
 
   /**
-   * установить значения стандартных полей (insert_date и т.п.) для несистемной
-   * модели. Если isNewModel == true - то это новая запись (insert). Если
-   * isNewModel == false - то это обновление старой записи (update)
+   * установить значения стандартных полей (insert_date и т.п.) для несистемной модели. Если isNewModel == true - то это
+   * новая запись (insert). Если isNewModel == false - то это обновление старой записи (update)
    *
    * @param model модель
    * @param isNewModel новая ли это запись
@@ -206,11 +204,9 @@ public interface Service {
   public AbstractApplication getApp();
 
   /**
-   * в объекте ActionResult установить словарь, т.е. массив информации для
-   * вывода комбо.
+   * в объекте ActionResult установить словарь, т.е. массив информации для вывода комбо.
    *
-   * Этот метод должен вызываться после того, как результаты запроса загружены в
-   * actionResult.
+   * Этот метод должен вызываться после того, как результаты запроса загружены в actionResult.
    */
   public void setDictionary();
 
@@ -238,9 +234,81 @@ public interface Service {
 
   @Deprecated
   public void saveModel(Model model) throws Exception;
+
+  public DAOInterface getDao() throws Exception;
+
+  /**
+   * поиск по первичному ключу. Вызывает метод модели findByPrimary. Если результат поиска true, то метод возвращает
+   * true. Если результат поиска false, то метод устанавливает в ActionResult status = false, а также устанавливает в
+   * ActionResult ошибки из модели, затем возвращает false
+   *
+   * @param model модель
+   * @param onlyActive искать только среди активных
+   * @return результат
+   * @throws Exception
+   */
+  public boolean find(Model model, boolean onlyActive) throws Exception;
+
+  /**
+   *
+   * поиск по первичному ключу. Вызывает метод модели findByPrimary. Если результат поиска true, то метод возвращает
+   * true. Если результат поиска false, то метод устанавливает в ActionResult status = false, а также устанавливает в
+   * ActionResult ошибки из модели, затем возвращает false
+   *
+   * @param model модель
+   * @return успешно ли выполнена операция
+   * @throws Exception
+   */
+  public boolean find(Model model) throws Exception;
+
+  /**
+   * сохранение модели. Вызывает метод модели save. Если при сохранении были ошибки, то устанавливает в ActionResult
+   * ошибки и status = false.
+   *
+   * @param model модель
+   * @return успешно ли сохранилось
+   * @throws Exception
+   */
+  public boolean save(Model model) throws Exception;
+
+  /**
+   * выполнение запроса. Если при выполнении были ошибки, то устанавливает в ActionResult ошибки и status = false.
+   *
+   * @param sel объект запроса
+   * @return успешно ли прошел запрос
+   * @throws Exception
+   */
+  public boolean execute(Select sel) throws Exception;
+
+  /**
+   * проверка ActionResult на начилие ошибок. Если есть ошибки, то устанавливает их в ActionResult, и устанавливает
+   * status = false.
+   *
+   * @param ar
+   * @return
+   * @throws Exception
+   */
+  public boolean checkAr(ActionResult ar) throws Exception;
+
+  /**
+   * проверка параметров на то, что они не равны null и не являются пустыми строками. Если один из параметров равен null
+   * или пустой строке, метод добавляет ошибки в ActionResult и устанавливает status = true
+   *
+   * @param params параметры
+   * @param errorMessage сообщение, которое записывается в случае ошибки
+   * @return
+   */
+  public boolean checkParams(Object[] params, String errorMessage);
   
-  public DAOInterface getDao () throws Exception;
-  
+  /**
+   * проверка параметра на то, что он не равен null и не является пустой строкой. Если параметр равен null
+   * или пустой строке, метод добавляет ошибки в ActionResult и устанавливает status = true
+   *
+   * @param param параметр
+   * @param errorMessage сообщение, которое записывается в случае ошибки
+   * @return
+   */
+  public boolean checkParam(Object param, String errorMessage);
   
   
   
