@@ -108,6 +108,8 @@ public class OptionsKeeper implements ToXml {
    * ошибки
    */
   private ArrayList<String> error = new ArrayList<String>();
+  
+  private String controllerPath = "";
 
   public static OptionsKeeper getInstance(String path) throws Exception {
     FileInputStream fis = null;
@@ -139,13 +141,21 @@ public class OptionsKeeper implements ToXml {
       String uploadPath = OptionsKeeper.getElementsByTagName("uploadPath").item(0).getChildNodes().item(0).getNodeValue();
       String appConfigPath = OptionsKeeper.getElementsByTagName("appConfigPath").item(0).getChildNodes().item(0).getNodeValue();
       String filePath = OptionsKeeper.getElementsByTagName("filePath").item(0).getChildNodes().item(0).getNodeValue();
+      
+      String controllerPath = "";
+      
+      NodeList nodeList = OptionsKeeper.getElementsByTagName("controllerPath");
+      if (nodeList.getLength() > 0) {
+        controllerPath = nodeList.item(0).getChildNodes().item(0).getNodeValue();
+      }
+      
       return new OptionsKeeper(str(dbDriver), str(dbDriverUrl), str(dbName), str(dbHost), str(dbUser), str(dbPass),
               str(dbEncoding), str(appLogPath), str(appLocale), str(appUserDataConfigPath),
               str(filePath), in(sessionLifeTime), str(biPath), str(dumpPath), str(emailNotification),
-              str(renderPath), str(appConfigPath), in(maxUploadSizeMB), str(uploadPath));
+              str(renderPath), str(appConfigPath), in(maxUploadSizeMB), str(uploadPath), str(controllerPath));
     } catch (Exception e) {
       return new OptionsKeeper(null, null, null, null, null, null, null, null, null, null,
-             null, null, null, null, null, null,path, null, null);
+             null, null, null, null, null, null,path, null, null, null);
     } finally {
       if (fis != null) {
         fis.close();
@@ -157,16 +167,16 @@ public class OptionsKeeper implements ToXml {
           String dbHost, String dbUser, String dbPass, String dbEncoding, String appLogPath,
           String appLocale, String appUserDataConfigPath, String filePath, Integer sessionLifeTime,
           String biPath, String dumpPath, String emailNotification, String renderPath,
-          String appConfigPath, Integer maxUploadSizeMB, String uploadPath) {
+          String appConfigPath, Integer maxUploadSizeMB, String uploadPath, String controllerPath) {
     return new OptionsKeeper(dbDriver, dbDriverUrl, dbName, dbHost, dbUser, dbPass,
             dbEncoding, appLogPath, appLocale, appUserDataConfigPath,
             filePath, sessionLifeTime, biPath, dumpPath, emailNotification,
-            renderPath, appConfigPath, maxUploadSizeMB, uploadPath);
+            renderPath, appConfigPath, maxUploadSizeMB, uploadPath, controllerPath);
   }
 
   private OptionsKeeper(String dbDriver, String dbDriverUrl, String dbName, String dbHost, String dbUser,
           String dbPass, String dbEncoding, String appLogPath, String appLocale, String appUserDataConfigPath, String filePath, Integer sessionLifeTime, String biPath, String dumpPath, String emailNotification,
-          String renderPath, String appConfigPath, Integer maxUploadSizeMB, String uploadPath) {
+          String renderPath, String appConfigPath, Integer maxUploadSizeMB, String uploadPath, String controllerPath) {
     this.dbDriver = dbDriver;
     this.dbDriverUrl = dbDriverUrl;
     this.dbName = dbName;
@@ -194,6 +204,7 @@ public class OptionsKeeper implements ToXml {
       this.maxUploadSizeMB = maxUploadSizeMB;
     }
     this.uploadPath = uploadPath;
+    this.controllerPath = controllerPath;
   }
 
   /**
@@ -369,6 +380,14 @@ public class OptionsKeeper implements ToXml {
     return error;
   }
 
+  public String getControllerPath() {
+    return controllerPath;
+  }
+
+  public void setControllerPath(String controllerPath) {
+    this.controllerPath = controllerPath;
+  }
+
   @Override
   public void getSelfInXml(Document doc, Element optionsKeeper) throws Exception {
     primXml.createElement(doc, optionsKeeper, "dbDriver", dbDriver);
@@ -390,6 +409,7 @@ public class OptionsKeeper implements ToXml {
     primXml.createElement(doc, optionsKeeper, "appConfigPath", appConfigPath);
     primXml.createElement(doc, optionsKeeper, "maxUploadSizeMB", maxUploadSizeMB);
     primXml.createElement(doc, optionsKeeper, "uploadPath", uploadPath);
+    primXml.createElement(doc, optionsKeeper, "controllerPath", controllerPath);
   }
 
   private static String str(Object ob) {

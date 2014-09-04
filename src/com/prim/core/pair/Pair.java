@@ -122,4 +122,15 @@ public interface Pair extends Cloneable {
   public void removePair(String object, String action);
   
    public void setDef(Boolean def);
+   
+   /**
+    * новые методы
+    */
+   
+   public void setControllerName(String controllerName);
+   
+   public String getControllerName();
+   
+   public boolean isByWebController();
+   
 }

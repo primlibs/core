@@ -31,10 +31,16 @@ public final class PairObject implements Pair {
   private Pair parent;
   //используется для поиска
   private List<Pair> searchList = new ArrayList();
+  
+  private String controllerName = "";
+  
+  private boolean byWebController = false;
 
-  private PairObject(String object, String action, Boolean def, Map<String, Sequence> sequence, List<Pair> pairArray, Pair parent) {
+  private PairObject(String object, String action, Boolean def, Map<String, Sequence> sequence, List<Pair> pairArray, Pair parent, boolean byWebController, String controllerName) {
     this.object = (object == null ? "" : object);
     this.action = (action == null ? "" : action);
+    this.byWebController = byWebController;
+    this.controllerName = controllerName;
     this.def = def;
     if (parent != null) {
       this.parent = parent;
@@ -61,8 +67,8 @@ public final class PairObject implements Pair {
 
   }
 
-  public static PairObject getInstance(String object, String action, Boolean def, Map<String, Sequence> sequence, List<Pair> pairArray, Pair parent) {
-    return new PairObject(object, action, def, sequence, pairArray, parent);
+  public static PairObject getInstance(String object, String action, Boolean def, Map<String, Sequence> sequence, List<Pair> pairArray, Pair parent, boolean byWebController, String controllerName) {
+    return new PairObject(object, action, def, sequence, pairArray, parent, byWebController, controllerName);
   }
 
   public void setParent(Pair pair) {
@@ -348,7 +354,7 @@ public final class PairObject implements Pair {
 
   @Override
   public Pair clone() {
-    return getInstance(object, action, def, sequence, pairArray, parent);
+    return getInstance(object, action, def, sequence, pairArray, parent, byWebController, controllerName);
   }
 
   /*
@@ -448,5 +454,22 @@ public final class PairObject implements Pair {
   @Override
   public void setDef(Boolean def) {
     this.def=def;
+  }
+
+  @Override
+  public void setControllerName(String controllerName) {
+    this.controllerName = controllerName;
+  }
+
+  
+
+  @Override
+  public String getControllerName() {
+    return controllerName;
+  }
+
+  @Override
+  public boolean isByWebController() {
+    return byWebController;
   }
 }

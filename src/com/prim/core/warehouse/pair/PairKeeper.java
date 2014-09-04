@@ -206,7 +206,7 @@ public class PairKeeper {
   }
 
   public void reset() {
-    pair = PairObject.getInstance("app", "show", Boolean.TRUE, null, null, null);
+    pair = PairObject.getInstance("app", "show", Boolean.TRUE, null, null, null, false, "");
   }
 
   private void setPairsFromXml(String path) throws Exception {

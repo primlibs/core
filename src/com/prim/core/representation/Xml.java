@@ -176,7 +176,6 @@ public class Xml {
       fields.put(field.getAlias(), field);
     }
 
-
     Element uniquesElement = (Element) structureElement.getElementsByTagName("uniqueList").item(0);
     List<Unique> uniqueList = new ArrayList();
     NodeList uniqueNodeList = uniquesElement.getElementsByTagName("unique");
@@ -221,6 +220,10 @@ public class Xml {
     primXml.createElement(doc, pairElement, "object", pair.getObject());
     primXml.createElement(doc, pairElement, "action", pair.getAction());
     primXml.createElement(doc, pairElement, "def", pair.getDef());
+
+    primXml.createElement(doc, pairElement, "controllerName", pair.getControllerName());
+    primXml.createElement(doc, pairElement, "byWebController", pair.isByWebController());
+
     Element seqMap = primXml.createEmptyElement(doc, pairElement, "sequenceMap");
     for (Sequence ss : pair.getSequenceClone().values()) {
       Element seq = primXml.createEmptyElement(doc, seqMap, "sequense");
@@ -235,10 +238,27 @@ public class Xml {
       pairToXml(doc, pr, pp);
     }
 
-
   }
 
   public static PairObject pairFromXml(Element elem) throws CloneNotSupportedException, Exception {
+
+    NodeList list = elem.getElementsByTagName("controllerName");
+    String controllerName = "";
+    if (list.getLength() > 0) {
+      NodeList child = list.item(0).getChildNodes();
+      if (child.getLength() > 0) {
+        controllerName = child.item(0).getNodeValue();
+      }
+    }
+
+    list = elem.getElementsByTagName("byWebController");
+    boolean byWebController = false;
+    if (list.getLength() > 0) {
+      NodeList child = list.item(0).getChildNodes();
+      if (child.getLength() > 0) {
+        byWebController = Boolean.parseBoolean(child.item(0).getNodeValue());
+      }
+    }
 
     String object = elem.getElementsByTagName("object").item(0).getChildNodes().item(0).getNodeValue();
     String action = elem.getElementsByTagName("action").item(0).getChildNodes().item(0).getNodeValue();
@@ -266,7 +286,8 @@ public class Xml {
       }
     }
 
-    PairObject self = PairObject.getInstance(object, action, def, sequence, pairs, null);
+    PairObject self = PairObject.getInstance(object, action, def, sequence, pairs, null, byWebController, controllerName);
+
     for (Pair pp : self.getAllParentСlone()) {
       pp.setParent(self);
     }
