@@ -109,6 +109,9 @@ public class OptionsKeeper implements ToXml {
    */
   private ArrayList<String> error = new ArrayList<String>();
   
+  /**
+   * путь к контроллерам
+   */
   private String controllerPath = "";
 
   public static OptionsKeeper getInstance(String path) throws Exception {

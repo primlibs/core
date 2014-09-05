@@ -127,6 +127,9 @@ public abstract class AbstractApplication implements Serializable {
    */
   protected Integer maxUploadSizeMB = 20;
   protected Boolean valid = false;
+  
+  protected String controllerClassPath = "controllers";
+  
   /**
    * путь к директории, где хранятся временные файлы при загрузке файлов
    */
@@ -207,6 +210,14 @@ public abstract class AbstractApplication implements Serializable {
 
   public void setFileList(List<UploadedFile> fileList) {
     this.fileList = fileList;
+  }
+
+  public String getControllerClassPath() {
+    return controllerClassPath;
+  }
+
+  public void setControllerClassPath(String controllerClassPath) {
+    this.controllerClassPath = controllerClassPath;
   }
   
   
