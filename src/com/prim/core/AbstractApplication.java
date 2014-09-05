@@ -128,7 +128,7 @@ public abstract class AbstractApplication implements Serializable {
   protected Integer maxUploadSizeMB = 20;
   protected Boolean valid = false;
   
-  protected String controllerClassPath = "controllers";
+  protected String controllerClassPath = "controllers.entities";
   
   /**
    * путь к директории, где хранятся временные файлы при загрузке файлов
