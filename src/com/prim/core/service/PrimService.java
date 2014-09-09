@@ -173,7 +173,7 @@ final class PrimService implements Service {
       setDictionary();
     } catch (Exception ex) {
       actionResult.setStatusCode(StatusCodes.BIZ);
-      actionResult.addError(MyString.getStackExeption(ex));
+      actionResult.addError("method: findActive, service: " + getModelName() + ". " + MyString.getStackExeption(ex));
     }
   }
 
@@ -218,11 +218,11 @@ final class PrimService implements Service {
         setDictionary();
       } catch (Exception ex) {
         actionResult.setStatusCode(StatusCodes.BIZ);
-        actionResult.addError(MyString.getStackExeption(ex));
+        actionResult.addError("method: findActiveByDate, service: " + getModelName() + ". " + MyString.getStackExeption(ex));
       }
     } else {
       actionResult.setStatusCode(StatusCodes.BIZ);
-      actionResult.addError(chVal.getErrors());
+      actionResult.addError("method: findActiveByDate, service: " + getModelName() + ". " + chVal.getErrors());
     }
 
   }
@@ -237,14 +237,14 @@ final class PrimService implements Service {
       if (innerPost.findByPrimary()) {
         byte[] bytes = innerPost.doZip();
         actionResult.set("zip", bytes);
-        actionResult.addError(innerPost.getError());
+        actionResult.addError("method: getZipFile, service: " + getModelName() + ". " + innerPost.getError());
       } else {
         actionResult.setStatusCode(StatusCodes.BIZ);
-        actionResult.addError("не найдена модель по ИД");
+        actionResult.addError("method: getZipFile, service: " + getModelName() + ". " + "не найдена модель по ИД");
       }
     } catch (Exception e) {
       actionResult.setStatusCode(StatusCodes.BIZ);
-      actionResult.addError(MyString.getStackExeption(e));
+      actionResult.addError("method: getZipFile, service: " + getModelName() + ". " + MyString.getStackExeption(e));
     }
   }
 
@@ -303,7 +303,7 @@ final class PrimService implements Service {
       actionResult.setDinamicArrayList(list);
       setDictionary();
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " searchById()");
+      actionResult.addError("method: searchById, service: " + getModelName() + ". " + MyString.getStackExeption(ex) + " " + modelName + " searchById()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -329,7 +329,7 @@ final class PrimService implements Service {
       actionResult.setDinamicArrayList(list);
       setDictionary();
     } catch (Exception ex) {
-      actionResult.addError(ex.toString() + " " + modelName + " searchById()");
+      actionResult.addError("method: searchActiveById, service: " + getModelName() + ". " + ex.toString() + " " + modelName + " searchById()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -350,7 +350,7 @@ final class PrimService implements Service {
         actionResult.set(name, model.getParams().get(name));
       }
     } catch (Exception ex) {
-      actionResult.addError(ex.toString() + " " + modelName + " deleteById()");
+      actionResult.addError("method: deleteById, service: " + getModelName() + ". " +ex.toString() + " " + modelName + " deleteById()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -369,7 +369,7 @@ final class PrimService implements Service {
       }
       if (model.getPrimary() == null || "".equals(model.getPrimary())) {
         status = false;
-        actionResult.addError("Не обнаружен первичный ключ " + model.getPrimaryAlias());
+        actionResult.addError("method: updateModel, service: " + getModelName() + ". " +"Не обнаружен первичный ключ " + model.getPrimaryAlias());
         actionResult.setStatus(false);
       } else {
         status = model.save();
@@ -381,7 +381,7 @@ final class PrimService implements Service {
       }
       clearBaseCashes();
     } catch (Exception ex) {
-      actionResult.addError(ex.toString() + " " + modelName + " updateModel()");
+      actionResult.addError("method: updateModel, service: " + getModelName() + ". " +ex.toString() + " " + modelName + " updateModel()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -396,7 +396,7 @@ final class PrimService implements Service {
       model.set(request);
       if (model.findByPrimary() == false) {
         status = false;
-        actionResult.addError("Не обнаружен первичный ключ " + model.getPrimaryAlias());
+        actionResult.addError("method: closeModel, service: " + getModelName() + ". " +"Не обнаружен первичный ключ " + model.getPrimaryAlias());
       } else {
         if (getModel().isModelSystem()) {
           model.set("active_to", FormatDate.getDateInMysql(operationDate));
@@ -418,7 +418,7 @@ final class PrimService implements Service {
       }
       clearBaseCashes();
     } catch (Exception ex) {
-      actionResult.addError(ex.toString() + " " + modelName + " closeModel()");
+      actionResult.addError("method: closeModel, service: " + getModelName() + ". " +ex.toString() + " " + modelName + " closeModel()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -434,7 +434,7 @@ final class PrimService implements Service {
       Model model = modelFactory.getModel(modelName);
       actionResult.model(model);
     } catch (Exception ex) {
-      actionResult.addError(ex.toString() + " " + modelName + " setStructure()");
+      actionResult.addError("method: setStructure, service: " + getModelName() + ". " +ex.toString() + " " + modelName + " setStructure()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -460,7 +460,7 @@ final class PrimService implements Service {
       }
       if (model.getPrimary() != null && !"".equals(model.getPrimary())) {
         status = false;
-        actionResult.addError("Обнаружен первичный ключ " + model.getPrimaryAlias() + model.getPrimary());
+        actionResult.addError("method: saveModel, service: " + getModelName() + ". " +"Обнаружен первичный ключ " + model.getPrimaryAlias() + model.getPrimary());
       } else {
         status = model.save();
         actionResult.model(model);
@@ -471,7 +471,7 @@ final class PrimService implements Service {
       }
       actionResult.setStatus(status);
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " saveModel()");
+      actionResult.addError("method: saveModel, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " saveModel()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -497,7 +497,7 @@ final class PrimService implements Service {
       actionResult.select(select);
       setDictionary();
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " findAll()");
+      actionResult.addError("method: findAll, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " findAll()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
 
@@ -519,7 +519,7 @@ final class PrimService implements Service {
       }
       actionResult.model(model);
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " deleteAllFiles()");
+      actionResult.addError("method: deleteAllFiles, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " deleteAllFiles()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -546,7 +546,7 @@ final class PrimService implements Service {
       }
       actionResult.setStatus(status);
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " deleteFile()");
+      actionResult.addError("method: deleteFile, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " deleteFile()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -561,7 +561,7 @@ final class PrimService implements Service {
       model.set(request);
       boolean status = false;
       if (fileList == null || fileList.isEmpty()) {
-        actionResult.addError("Не переданы файлы или размер одного из файлов превышает " + app.getMaxUploadSizeMB() + " МВ");
+        actionResult.addError("method: saveFiles, service: " + getModelName() + ". " +"Не переданы файлы или размер одного из файлов превышает " + app.getMaxUploadSizeMB() + " МВ");
         actionResult.set(model.getPrimaryAlias(), model.get(model.getPrimaryAlias()));
       } else {
         if (model.findByPrimary()) {
@@ -569,14 +569,14 @@ final class PrimService implements Service {
             if (file.getTemporaryPath() != null && !file.getTemporaryPath().isEmpty()) {
               status = model.copyFile(file.getTemporaryPath(), file.getName(), authorizedUserId, operationDate);
             } else {
-              actionResult.addError("Невозможно определить файл");
+              actionResult.addError("method: saveFiles, service: " + getModelName() + ". " +"Невозможно определить файл");
             }
             if (status == false) {
               break;
             }
           }
         } else {
-          actionResult.addError("Не найдена модель");
+          actionResult.addError("method: saveFiles, service: " + getModelName() + ". " +"Не найдена модель");
         }
         actionResult.model(model);
         // присвоить в actionResult все параметры модели
@@ -586,7 +586,7 @@ final class PrimService implements Service {
       }
       actionResult.setStatus(status);
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " saveFiles()");
+      actionResult.addError("method: saveFiles, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " saveFiles()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -614,13 +614,13 @@ final class PrimService implements Service {
               actionResult.set("fileName", fm.get("rusname"));
               status = true;
             } else {
-              actionResult.addError("Не найдена модель файла");
+              actionResult.addError("method: getFile, service: " + getModelName() + ". " +"Не найдена модель файла");
             }
           } else {
-            actionResult.addError("Файл не найден");
+            actionResult.addError("method: getFile, service: " + getModelName() + ". " +"Файл не найден");
           }
         } else {
-          actionResult.addError("fileId не передан");
+          actionResult.addError("method: getFile, service: " + getModelName() + ". " +"fileId не передан");
         }
       }
       // присвоить в actionResult все параметры модели
@@ -629,7 +629,7 @@ final class PrimService implements Service {
       }
       actionResult.setStatus(status);
     } catch (Exception ex) {
-      actionResult.addError(MyString.getStackExeption(ex) + " " + modelName + " getFile()");
+      actionResult.addError("method: getFile, service: " + getModelName() + ". " +MyString.getStackExeption(ex) + " " + modelName + " getFile()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -666,7 +666,7 @@ final class PrimService implements Service {
       }
       actionResult.setDictionary(resultHash);
     } catch (Exception e) {
-      actionResult.addError(MyString.getStackExeption(e) + " " + modelName + " setDictionary()");
+      actionResult.addError("method: setDictionary, service: " + getModelName() + ". " +MyString.getStackExeption(e) + " " + modelName + " setDictionary()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -692,9 +692,9 @@ final class PrimService implements Service {
         res = md.saveFile(name, content, authorizedUserId, operationDate);
       }
       actionResult.setStatus(res);
-      actionResult.addError(md.getError());
+      actionResult.addError("method: saveFile, service: " + getModelName() + ". " +md.getError());
     } catch (Exception e) {
-      actionResult.addError(MyString.getStackExeption(e) + " " + modelName + " saveFile()");
+      actionResult.addError("method: saveFile, service: " + getModelName() + ". " +MyString.getStackExeption(e) + " " + modelName + " saveFile()");
       actionResult.setStatusCode(StatusCodes.BIZ);
     }
   }
@@ -740,10 +740,10 @@ final class PrimService implements Service {
       // сохранить
       status = model.copyFile(path, file.get("rusname").toString(), authorizedUserId, operationDate);
       if (status == false) {
-        actionResult.addError(model.getError());
+        actionResult.addError("method: copyFile, service: " + getModelName() + ". " +model.getError());
       }
     } else {
-      actionResult.addError(file.getError());
+      actionResult.addError("method: copyFile, service: " + getModelName() + ". " +file.getError());
     }
     return status;
   }
@@ -895,22 +895,8 @@ final class PrimService implements Service {
     this.fileList = fileList;
   }
 
-  /*
-   public void executeSelect(Select select) throws Exception {
-   boolean ok = select.executeSelect(getConnection());
-   if (!ok) {
-   throw new Exception(select.getError().toString());
-   }
-   }
-
-   public void saveModel(Model model) throws Exception {
-   boolean ok = model.save();
-   if (!ok) {
-   throw new Exception(model.getError().toString());
-   }
-   }
-   */
   @Override
+  @Deprecated
   public void executeSelect(Select select) throws Exception {
     boolean ok = select.executeSelect(getConnection());
     if (!ok) {
@@ -921,11 +907,12 @@ final class PrimService implements Service {
   }
 
   @Override
+  @Deprecated
   public void saveModel(Model model) throws Exception {
     boolean ok = model.save();
     if (!ok) {
       setStatus(false);
-      addError(model.getError());
+      addError("service " + getModelName() + ": " + model.getError());
       throw new Exception();
     }
   }
@@ -945,7 +932,7 @@ final class PrimService implements Service {
     boolean ok = model.findByPrimary(onlyActive);
     if (!ok) {
       setStatus(false);
-      addError(model.getError());
+      addError("method: find, service: " + getModelName() + ". " +model.getError());
     }
     return ok;
   }
@@ -955,7 +942,7 @@ final class PrimService implements Service {
     boolean ok = model.findByPrimary();
     if (!ok) {
       setStatus(false);
-      addError(model.getError());
+      addError("method: find, service " + getModelName() + ": " + model.getError());
     }
     return ok;
   }
@@ -965,7 +952,7 @@ final class PrimService implements Service {
     boolean ok = model.save();
     if (!ok) {
       setStatus(false);
-      addError(model.getError());
+      addError("method: save, service " + getModelName() + ": " +model.getError());
     }
     return ok;
   }
@@ -975,7 +962,7 @@ final class PrimService implements Service {
     boolean ok = sel.executeSelect(getConnection());
     if (!ok) {
       setStatus(false);
-      addError(sel.getError());
+      addError("method: execute, service " + getModelName() + ": " + sel.getError());
     }
     return ok;
   }
@@ -985,7 +972,7 @@ final class PrimService implements Service {
     boolean ok = ar.getStatus().equals(StatusCodes.TRUE);
     if (!ok) {
       getActionResult().setStatusCode(ar.getStatus());
-      addError(ar.getErrors());
+      addError("method: checkAr, service " + getModelName() + ": " + ar.getErrors());
     }
     return ok;
   }
@@ -1000,7 +987,7 @@ final class PrimService implements Service {
       }
     }
     if (!ok) {
-      addError(errorMessage);
+      addError("method: checkParams, service " + getModelName() + ": " +errorMessage);
       setStatus(false);
     }
     return ok;
@@ -1011,7 +998,7 @@ final class PrimService implements Service {
     boolean ok = MyString.NotNull(param);
     if (!ok) {
       setStatus(false);
-      addError(errorMessage);
+      addError("method: checkParam, service " + getModelName() + ": " +errorMessage);
     }
     return ok;
   }
