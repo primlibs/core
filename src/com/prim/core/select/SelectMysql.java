@@ -318,6 +318,47 @@ class SelectMysql implements Select {
     return this;
   }
 
+  
+   /**
+   * добавить таблицу в блок From
+   *
+   * @param tb таблица
+   */
+  @Override
+  public SelectMysql fromWithoutIndex(Table tb, String... indexes) {
+    tables.put(tb.getModelTbAlias(), tb);
+    allSelectTables.add(tb);
+    String index = "";
+    Integer cnt = 0;
+    for (String ind : indexes) {
+      if (MyString.NotNull(ind)) {
+        if (cnt == 0) {
+          index += ind;
+        } else {
+          index += ", " + ind;
+        }
+        cnt++;
+      }
+    }
+    if (cnt > 0) {
+      index = "ignore index (" + index + ")";
+    }
+    if (from == false) {
+      resultSelect += " from ";
+      resultSelect += " " + tb.getRealName() + " " + tb.getModelTbAlias() + " " + index + " ";
+      from = true;
+    } else {
+      resultSelect += " inner join " + tb.getRealName() + " " + tb.getModelTbAlias() + " " + index + " ";
+    }
+    return this;
+  }
+  
+  
+  
+  
+  
+  
+  
   @Override
   public SelectMysql from(Table tb) {
     fromWithIndex(tb);
