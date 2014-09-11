@@ -932,7 +932,7 @@ final class PrimService implements Service {
     boolean ok = model.findByPrimary(onlyActive);
     if (!ok) {
       setStatus(false);
-      addError("method: find, service: " + getModelName() + ". " +model.getError());
+      addError("method: find, service: " + getModelName() + ", model: " + model.getStructure().getTableAlias() + ". " +model.getError());
     }
     return ok;
   }
@@ -942,7 +942,7 @@ final class PrimService implements Service {
     boolean ok = model.findByPrimary();
     if (!ok) {
       setStatus(false);
-      addError("method: find, service " + getModelName() + ": " + model.getError());
+      addError("method: find, service " + getModelName() + ", model: " + model.getStructure().getTableAlias() + ". " + model.getError());
     }
     return ok;
   }
