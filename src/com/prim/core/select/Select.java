@@ -126,6 +126,7 @@ public interface Select {
    */
   public Select fromWithIndex(Table tb, String... indexes);
 
+  public SelectMysql fromWithoutIndex(Table tb, String... indexes);
   /**
    * добавить выражение в блок select
    *
