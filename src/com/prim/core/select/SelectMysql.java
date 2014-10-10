@@ -824,7 +824,7 @@ class SelectMysql implements Select {
     resultSelect += " having " + str + " ";
     return this;
   }
-
+  
   @Override
   public Integer getLimitFrom() {
     return limitFrom;
