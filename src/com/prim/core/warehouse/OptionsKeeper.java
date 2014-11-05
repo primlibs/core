@@ -113,9 +113,11 @@ public class OptionsKeeper implements ToXml {
    * путь к контроллерам
    */
   private String controllerPath = "";
+  
+  public String info = "";
 
   public static OptionsKeeper getInstance(String path) throws Exception {
-    FileInputStream fis = null;
+    FileInputStream fis = null;    
     try {
       fis = new FileInputStream(path);
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -148,7 +150,7 @@ public class OptionsKeeper implements ToXml {
       String controllerPath = "";
       
       NodeList nodeList = OptionsKeeper.getElementsByTagName("controllerPath");
-      if (nodeList.getLength() > 0) {
+      if (nodeList != null && nodeList.getLength() > 0) {
         controllerPath = nodeList.item(0).getChildNodes().item(0).getNodeValue();
       }
       
@@ -157,8 +159,9 @@ public class OptionsKeeper implements ToXml {
               str(filePath), in(sessionLifeTime), str(biPath), str(dumpPath), str(emailNotification),
               str(renderPath), str(appConfigPath), in(maxUploadSizeMB), str(uploadPath), str(controllerPath));
     } catch (Exception e) {
-      return new OptionsKeeper(null, null, null, null, null, null, null, null, null, null,
+      OptionsKeeper o = new OptionsKeeper(null, null, null, null, null, null, null, null, null, null,
              null, null, null, null, null, null,path, null, null, null);
+      return o; 
     } finally {
       if (fis != null) {
         fis.close();
