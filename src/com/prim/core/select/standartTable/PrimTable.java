@@ -4,7 +4,6 @@
  */
 package com.prim.core.select.standartTable;
 
-
 import com.prim.core.modelStructure.Field;
 import com.prim.core.select.Parameter;
 import com.prim.core.select.Table;
@@ -23,7 +22,7 @@ public class PrimTable implements Table {
   public static final String DELETE_DATE = "delete_date";
   
   public static final String INSERT_DATE = "insert_date";
-  
+
   protected Table table;
 
   @Override
@@ -82,7 +81,7 @@ public class PrimTable implements Table {
   }
 
   public Parameter DELETE_DATE() throws CloneNotSupportedException {
-    return get("delete_date");
+    return get(DELETE_DATE);
   }
   
   public Parameter INSERT_DATE() throws CloneNotSupportedException {
