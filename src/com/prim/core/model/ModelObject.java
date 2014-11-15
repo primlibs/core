@@ -5,6 +5,7 @@
 package com.prim.core.model;
 
 import com.prim.core.AbstractApplication;
+import com.prim.core.UploadedFile;
 import com.prim.core.db.ExecutorFabric;
 import com.prim.core.db.QueryExecutor;
 import com.prim.core.modelStructure.Field;
@@ -1061,6 +1062,11 @@ final class ModelObject implements Model {
   @Override
   public Structure getStructure() throws CloneNotSupportedException {
     return expDinamicModel.getStructureClone();
+  }
+
+  @Override
+  public boolean saveFile(UploadedFile file, int authorizedUserId) throws Exception {
+    return saveFile(file.getTemporaryPath(), file.getName(), authorizedUserId, new Date());
   }
 
 }

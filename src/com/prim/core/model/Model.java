@@ -4,6 +4,7 @@
  */
 package com.prim.core.model;
 
+import com.prim.core.UploadedFile;
 import com.prim.core.modelStructure.Structure;
 import java.io.File;
 import java.util.Date;
@@ -25,6 +26,7 @@ public interface Model {
    */
   public Boolean save() throws Exception;
   
+  public boolean saveFile(UploadedFile file, int authorizedUserId) throws Exception;
   
   /**
    * возвращает текст последнего sql-запроса
