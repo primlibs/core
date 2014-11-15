@@ -1066,7 +1066,7 @@ final class ModelObject implements Model {
 
   @Override
   public boolean saveFile(UploadedFile file, int authorizedUserId) throws Exception {
-    return saveFile(file.getTemporaryPath(), file.getName(), authorizedUserId, new Date());
+    return copyFile(file.getTemporaryPath(), file.getName(), authorizedUserId, new Date());
   }
 
 }
