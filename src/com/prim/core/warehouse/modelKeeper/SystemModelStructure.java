@@ -161,7 +161,9 @@ public class SystemModelStructure {
             Document doc = builder.parse(file);
             NodeList list = doc.getChildNodes();
             Element root = (Element) list.item(0);
-            Xml.structureToXml(doc,root, str);
+            Element structure = doc.createElement("structure");
+            root.appendChild(structure);
+            Xml.structureToXml(doc,structure, str);
             Transformer t=TransformerFactory.newInstance().newTransformer();
             t.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(config)));
       }
