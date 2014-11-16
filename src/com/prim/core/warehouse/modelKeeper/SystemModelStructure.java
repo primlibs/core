@@ -6,6 +6,7 @@ import com.prim.core.modelStructure.FieldFabric;
 import com.prim.core.modelStructure.Structure;
 import com.prim.core.modelStructure.StructureFabric;
 import com.prim.core.modelStructure.Unique;
+import com.prim.core.representation.Xml;
 import com.prim.support.enums.DataTypes;
 import com.prim.support.filterValidator.entity.ValidatorAbstract;
 import java.util.HashMap;
@@ -15,6 +16,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 //import prim.warehouse.OptionsSingleton;
 
@@ -136,4 +141,36 @@ public class SystemModelStructure {
   public Map<String, Structure> getSystemConfig() {
     return systemStructureMap;
   }
+  
+  /*
+   * программная регистрация новой структуры без создания базы данных
+   */
+  
+  
+  public SystemModelStructure.Responce register(String name, Structure str,AbstractApplication app) throws Exception{
+      SystemModelStructure.Responce res=Responce.SUCSESS;
+      //проверить не содержится ли уже
+      if(systemStructureMap.containsKey(name)){
+          res=Responce.ERROR_MODEL_IS_REGISRERED;
+      }else{
+          String config = app.getAppUserDataConfigPath() + "/systemModel.xml";
+            // прочитать файл конфига
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            File file = new File(config);
+            Document doc = builder.parse(file);
+            NodeList list = doc.getChildNodes();
+            Element root = (Element) list.item(0);
+            Xml.structureToXml(doc,root, str);
+            Transformer t=TransformerFactory.newInstance().newTransformer();
+            t.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(config)));
+      }
+      return res;
+  }  
+  
+  
+  public static enum Responce{
+      SUCSESS,ERROR_MODEL_IS_REGISRERED
+  }
+  
 }
