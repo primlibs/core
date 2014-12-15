@@ -150,7 +150,7 @@ public class OptionsKeeper implements ToXml {
       String controllerPath = "";
       
       NodeList nodeList = OptionsKeeper.getElementsByTagName("controllerPath");
-      if (nodeList != null && nodeList.getLength() > 0) {
+      if (nodeList != null && nodeList.getLength() > 0 && nodeList.item(0).getChildNodes().getLength() > 0) {
         controllerPath = nodeList.item(0).getChildNodes().item(0).getNodeValue();
       }
       
