@@ -48,8 +48,6 @@ public class ControllerMethod implements Serializable, ToXml {
     this.free = free;
   }
 
-  
-  
   public static ControllerMethod getFromXml(Element elem) {
 
     String alias = elem.getElementsByTagName("alias").item(0).getChildNodes().item(0).getNodeValue();
