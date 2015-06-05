@@ -116,7 +116,7 @@ public class OptionsKeeper implements ToXml {
   
   public String info = "";
 
-  public static OptionsKeeper getInstance(String path) throws Exception {
+  synchronized public static OptionsKeeper getInstance(String path) throws Exception {
     FileInputStream fis = null;    
     try {
       fis = new FileInputStream(path);
@@ -169,7 +169,7 @@ public class OptionsKeeper implements ToXml {
     }
   }
 
-  public static OptionsKeeper getInstance(String dbDriver, String dbDriverUrl, String dbName,
+  synchronized public static OptionsKeeper getInstance(String dbDriver, String dbDriverUrl, String dbName,
           String dbHost, String dbUser, String dbPass, String dbEncoding, String appLogPath,
           String appLocale, String appUserDataConfigPath, String filePath, Integer sessionLifeTime,
           String biPath, String dumpPath, String emailNotification, String renderPath,
@@ -218,7 +218,7 @@ public class OptionsKeeper implements ToXml {
    *
    * @return
    */
-  public Boolean validate() {
+  synchronized public Boolean validate() {
     error.clear();
     valid = false;
     if (getDbDriver() == null || getDbDriver().equals("")) {
@@ -251,101 +251,101 @@ public class OptionsKeeper implements ToXml {
    *
    * @return путь к рендерам
    */
-  public String getRenderPath() {
+  synchronized public String getRenderPath() {
     return renderPath;
   }
 
   /**
    * Возвращает имя базы данныx
    */
-  public String getDbName() {
+  synchronized public String getDbName() {
     return dbName;
   }
 
   /**
    * Возвращает хост базы данных
    */
-  public String getDbHost() {
+  synchronized public String getDbHost() {
     return dbHost;
   }
 
   /**
    * Возвращает пользователя
    */
-  public String getDbUser() {
+  synchronized public String getDbUser() {
     return dbUser;
   }
 
   /**
    * Возвращает пароль
    */
-  public String getDbPass() {
+  synchronized public String getDbPass() {
     return dbPass;
   }
 
   /**
    * Возвращает кодировку DB
    */
-  public String getDbEncoding() {
+  synchronized public String getDbEncoding() {
     return dbEncoding;
   }
 
-  public Integer getSessionLifeTime() {
+  synchronized public Integer getSessionLifeTime() {
     return sessionLifeTime;
   }
 
-  public String getBiPath() {
+ synchronized public String getBiPath() {
     return biPath;
   }
 
-  public String getDumpPath() {
+ synchronized public String getDumpPath() {
     return dumpPath;
   }
 
-  public String getEmailNotification() {
+ synchronized public String getEmailNotification() {
     return emailNotification;
   }
 
-  public Integer getMaxUploadSizeMB() {
+ synchronized public Integer getMaxUploadSizeMB() {
     return maxUploadSizeMB;
   }
 
-  public String getUploadPath() {
+ synchronized public String getUploadPath() {
     return uploadPath;
   }
 
   /**
    * Возвращает путь к конфиг файлам
    */
-  public String getAppConfigPath() {
+ synchronized public String getAppConfigPath() {
     return appConfigPath;
   }
 
   /**
    * Возвращает путь к логам
    */
-  public String getAppLogPath() {
+synchronized  public String getAppLogPath() {
     return appLogPath;
   }
 
   /**
    * Возвращает локализацию
    */
-  public String getAppLocale() {
+ synchronized public String getAppLocale() {
     return appLocale;
   }
 
   /**
    * Возвращает драйвер бд
    */
-  public String getDbDriver() {
+ synchronized public String getDbDriver() {
     return dbDriver;
   }
 
   /**
    * Возвращает url драйвера бд
    */
-  public String getDbDriverUrl() {
+ synchronized public String getDbDriverUrl() {
     return dbDriverUrl;
   }
  
@@ -353,7 +353,7 @@ public class OptionsKeeper implements ToXml {
    *
    * @return путь к настройкам
    */
-  public String getAppUserDataConfigPath() {
+ synchronized public String getAppUserDataConfigPath() {
     return appUserDataConfigPath;
   }
 
@@ -362,18 +362,18 @@ public class OptionsKeeper implements ToXml {
    *
    * @return
    */
-  public Boolean getConfigFileExist() {
+ synchronized public Boolean getConfigFileExist() {
     return configFileExist;
   }
 
   /**
    * @return путь до директории, где находятся пользовательские файлы
    */
-  public String getFilePath() {
+ synchronized public String getFilePath() {
     return filePath;
   }
 
-  public Boolean getValid() {
+ synchronized public Boolean getValid() {
     return valid;
   }
 
@@ -382,20 +382,20 @@ public class OptionsKeeper implements ToXml {
    *
    * @return
    */
-  public ArrayList<String> getError() {
+ synchronized public ArrayList<String> getError() {
     return error;
   }
 
-  public String getControllerPath() {
+ synchronized public String getControllerPath() {
     return controllerPath;
   }
 
-  public void setControllerPath(String controllerPath) {
+ synchronized public void setControllerPath(String controllerPath) {
     this.controllerPath = controllerPath;
   }
 
   @Override
-  public void getSelfInXml(Document doc, Element optionsKeeper) throws Exception {
+ synchronized public void getSelfInXml(Document doc, Element optionsKeeper) throws Exception {
     primXml.createElement(doc, optionsKeeper, "dbDriver", dbDriver);
     primXml.createElement(doc, optionsKeeper, "dbDriverUrl", dbDriverUrl);
     primXml.createElement(doc, optionsKeeper, "dbName", dbName);

@@ -61,14 +61,14 @@ public final class ControllerKeeper {
     return new ControllerKeeper(app);
   }
 
-  public List<String> getErrors() {
+  synchronized public List<String> getErrors() {
     return errors;
   }
 
   /**
    * Вернет список контроллеров
    */
-  public Map<String, StructureController> getControllers() {
+  synchronized public Map<String, StructureController> getControllers() {
     return controllers;
   }
 
@@ -78,14 +78,14 @@ public final class ControllerKeeper {
    * @param cs
    * @return
    */
-  public StructureController getController(String cs) {
+  synchronized public StructureController getController(String cs) {
     return controllers.get(cs);
   }
 
   /**
    * Вернет 1 метод
    */
-  public ControllerMethod getOneControllerMethod(String controllerName, String controllerAction) {
+  synchronized public ControllerMethod getOneControllerMethod(String controllerName, String controllerAction) {
     ControllerMethod method = null;
     StructureController rs = controllers.get(controllerName);
     if (rs != null) {
@@ -97,7 +97,7 @@ public final class ControllerKeeper {
   /**
    * Добавит метод в синглтон, вернет boolean
    */
-  public Boolean addMethod(String controllerName, String controllerAction) throws Exception {
+  synchronized public Boolean addMethod(String controllerName, String controllerAction) throws Exception {
     ControllerMethod cm = new ControllerMethod();
     Boolean result = false;
     if (controllers.containsKey(controllerName)) {
@@ -120,7 +120,7 @@ public final class ControllerKeeper {
    *
    * @param controllerName
    */
-  public void addController(String controllerName) {
+  synchronized public void addController(String controllerName) {
     if (!controllers.containsKey(controllerName)) {
       controllers.put(controllerName, new StructureController());
     }
@@ -133,7 +133,7 @@ public final class ControllerKeeper {
    * @param methodName
    * @return
    */
-  public boolean hasMethod(String controllerName, String methodName) {
+  synchronized public boolean hasMethod(String controllerName, String methodName) {
     StructureController cnt = controllers.get(controllerName);
     if (cnt != null) {
       if (cnt.getControllersMethods().containsKey(methodName)) {
@@ -150,7 +150,7 @@ public final class ControllerKeeper {
    * @param methodName
    * @param method
    */
-  public void addMethod(String controllerName, String methodName, ControllerMethod method) {
+  synchronized public void addMethod(String controllerName, String methodName, ControllerMethod method) {
     StructureController cnt = controllers.get(controllerName);
     if (cnt != null) {
       cnt.setMethod(methodName, method);
@@ -164,7 +164,7 @@ public final class ControllerKeeper {
    * @return
    * @throws Exception
    */
-  public Boolean deleteController(String controllerName) throws Exception {
+  synchronized public Boolean deleteController(String controllerName) throws Exception {
     Boolean result = false;
     if (controllers.containsKey(controllerName)) {
       controllers.remove(controllerName);
@@ -176,7 +176,7 @@ public final class ControllerKeeper {
   /**
    * Удалить метод контроллера
    */
-  public Boolean deleteMethod(String controllerName, String controllerAction) throws Exception {
+  synchronized public Boolean deleteMethod(String controllerName, String controllerAction) throws Exception {
     Boolean result = false;
     //renders.config.Controller.out2.print(controllerName);
     StructureController clr = controllers.get(controllerName);
@@ -191,7 +191,7 @@ public final class ControllerKeeper {
   /**
    * Обновить controllersMethod из базы данных
    */
-  public void setDataFromBase() throws SQLException, Exception {
+  synchronized public void setDataFromBase() throws SQLException, Exception {
     controllers = new HashMap<String, StructureController>();
     Connection connection = null;
     ResultSet rs = null;
@@ -259,7 +259,7 @@ public final class ControllerKeeper {
    * @return
    * @throws Exception
    */
-  public Boolean saveController(String controllerName) throws Exception {
+  synchronized public Boolean saveController(String controllerName) throws Exception {
     Boolean result = false;
     Connection connection = null;
     try {

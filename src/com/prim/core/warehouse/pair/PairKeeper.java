@@ -41,7 +41,7 @@ public class PairKeeper {
   private AbstractApplication app;
   private List<String> errors = new ArrayList();
 
-  public void setApp(AbstractApplication app) {
+  synchronized public void setApp(AbstractApplication app) {
     this.app = app;
   }
   
@@ -50,7 +50,7 @@ public class PairKeeper {
    *
    * @return
    */
-  public static PairKeeper getInstance(AbstractApplication app) {
+  synchronized public static PairKeeper getInstance(AbstractApplication app) {
     return new PairKeeper(app);
   }
 
@@ -68,11 +68,11 @@ public class PairKeeper {
    *
    * @return
    */
-  public Pair getPair() {
+  synchronized public Pair getPair() {
     return pair;
   }
 
-  public void setPair(Pair pair) {
+  synchronized public void setPair(Pair pair) {
     this.pair = pair;
   }
 
@@ -83,7 +83,7 @@ public class PairKeeper {
    * @param actionName
    * @return
    */
-  public boolean containsPair(String objectName, String actionName) {
+  synchronized public boolean containsPair(String objectName, String actionName) {
     boolean contains = false;
     if (pair != null) {
       contains = pair.containsPair(objectName, actionName);
@@ -98,7 +98,7 @@ public class PairKeeper {
    * @param action
    * @return
    */
-  public Pair searchOnePair(String object, String action) {
+  synchronized public Pair searchOnePair(String object, String action) {
     Pair p = null;
     if (pair != null) {
       p = pair.searchOne(object, action);
@@ -112,7 +112,7 @@ public class PairKeeper {
    * @param object
    * @param action
    */
-  public void removePair(String object, String action) {
+  synchronized public void removePair(String object, String action) {
     pair.removePair(object, action);
   }
 
@@ -123,7 +123,7 @@ public class PairKeeper {
    * @throws FileNotFoundException
    * @throws IOException
    */
-  public Boolean SaveCollectionInFile() throws FileNotFoundException, IOException {
+  synchronized public Boolean SaveCollectionInFile() throws FileNotFoundException, IOException {
     Boolean res = false;
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -162,7 +162,7 @@ public class PairKeeper {
    * @param action
    * @return
    */
-  public List<Pair> getPairList(String object, String action) {
+  synchronized public List<Pair> getPairList(String object, String action) {
     pair.search(object, action);
     List<Pair> list = pair.getSearchListClone();
     if (list.isEmpty()) {
@@ -179,7 +179,7 @@ public class PairKeeper {
    * @param action
    * @return
    */
-  public List<Pair> getChildrenPairList(String object, String action) {
+  synchronized public List<Pair> getChildrenPairList(String object, String action) {
     pair.searchChildren(object, action);
     List<Pair> list = pair.getSearchListClone();
     return list;
@@ -192,7 +192,7 @@ public class PairKeeper {
    * @param action
    * @return
    */
-  public void addPair(Pair pp) {
+  synchronized public void addPair(Pair pp) {
     pair.addPair(pp);
   }
 
@@ -201,11 +201,11 @@ public class PairKeeper {
    *
    * @return
    */
-  public List<Pair> getAllPairs() {
+  synchronized public List<Pair> getAllPairs() {
     return pair.getAllPairsClone();
   }
 
-  public void reset() {
+  synchronized public void reset() {
     pair = PairObject.getInstance("app", "show", Boolean.TRUE, null, null, null, false, "");
   }
 
@@ -233,7 +233,7 @@ public class PairKeeper {
     }
   }
 
-  public List<String> getErrors() {
+  synchronized public List<String> getErrors() {
     return errors;
   }
 }

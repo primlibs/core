@@ -44,11 +44,11 @@ public class ModelStructureKeeper {
   private ArrayList<String> errors = new ArrayList<String>();
   private AbstractApplication app;
 
-  public void setApp(AbstractApplication app) {
+  synchronized public void setApp(AbstractApplication app) {
     this.app = app;
   }
   
-  public AbstractApplication getApplication() {
+  synchronized public AbstractApplication getApplication() {
     return app;
   }
   
@@ -78,7 +78,7 @@ public class ModelStructureKeeper {
     }
   }
 
-  public static ModelStructureKeeper getInstance(AbstractApplication application) throws Exception {
+  synchronized public static ModelStructureKeeper getInstance(AbstractApplication application) throws Exception {
     return new ModelStructureKeeper(application);
   }
 
@@ -88,7 +88,7 @@ public class ModelStructureKeeper {
    * @param name - имя модели
    * @return
    */
-  public Structure getStructure(String name) throws CloneNotSupportedException {
+  synchronized public Structure getStructure(String name) throws CloneNotSupportedException {
     if (structureMap.get(name) != null) {
       return structureMap.get(name).clone();
     }
@@ -100,7 +100,7 @@ public class ModelStructureKeeper {
    *
    * @return
    */
-  public Map<String, Structure> getStructureMap() throws CloneNotSupportedException {
+  synchronized public Map<String, Structure> getStructureMap() throws CloneNotSupportedException {
     Map<String, Structure> result = new LinkedHashMap();
     for (String name : structureMap.keySet()) {
       result.put(name, structureMap.get(name).clone());
@@ -114,7 +114,7 @@ public class ModelStructureKeeper {
    * @param name
    * @return
    */
-  public boolean hasStructure(String name) {
+  synchronized public boolean hasStructure(String name) {
     return structureMap.containsKey(name);
   }
 
@@ -123,7 +123,7 @@ public class ModelStructureKeeper {
    *
    * @return
    */
-  public ArrayList<String> getErrors() {
+  synchronized public ArrayList<String> getErrors() {
     return errors;
   }
 
@@ -133,7 +133,7 @@ public class ModelStructureKeeper {
    * @param name
    * @return
    */
-  ModelStructureKeeper removeStructure(String name) throws Exception {
+  synchronized ModelStructureKeeper removeStructure(String name) throws Exception {
     boolean status = false;
     errors.clear();
     if (structureMap.containsKey(name)) {
@@ -161,7 +161,7 @@ public class ModelStructureKeeper {
    * @return
    * @throws Exception
    */
-  public ModelStructureKeeper addStructure(String name, Structure struct) throws Exception {
+  synchronized public ModelStructureKeeper addStructure(String name, Structure struct) throws Exception {
     app.getConnection().prepareStatement("insert into user_data_types (name, active_from, struct_text) values (?, now(), ?)");
     boolean status = false;
     errors.clear();
@@ -224,7 +224,7 @@ public class ModelStructureKeeper {
    * @return
    * @throws Exception
    */
-  ModelStructureKeeper updateStructure(Structure struct) throws Exception {
+  synchronized ModelStructureKeeper updateStructure(Structure struct) throws Exception {
     boolean status = false;
     if (structureMap.containsValue(struct)) {
       return updateStructure(struct.getName());
@@ -239,7 +239,7 @@ public class ModelStructureKeeper {
    * @return
    * @throws Exception
    */
-  ModelStructureKeeper updateStructure(String name) throws Exception {
+  synchronized ModelStructureKeeper updateStructure(String name) throws Exception {
     boolean status = false;
     errors.clear();
 
@@ -305,7 +305,7 @@ public class ModelStructureKeeper {
    * @return
    * @throws Exception
    */
-  public ModelStructureKeeper updateStructure(String name, Structure struct) throws Exception {
+  synchronized public ModelStructureKeeper updateStructure(String name, Structure struct) throws Exception {
     boolean status = false;
     errors.clear();
 
